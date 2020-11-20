@@ -1,13 +1,24 @@
-import typescript from "@rollup/plugin-typescript";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
+import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import typescript from "@rollup/plugin-typescript";
 
 export default {
-  input: "index.ts",
+  input: "src/index.ts",
   output: {
+    sourcemap: "inline",
     format: "cjs",
     file: "main.js",
+    exports: "default",
   },
-  external: ["obsidian", "fs", "path"],
-  plugins: [typescript(), nodeResolve({ browser: true }), commonjs()],
+  external: ["obsidian", "fs", "os", "path"],
+  plugins: [
+    typescript(),
+    resolve({
+      browser: true,
+      dedupe: ["svelte"],
+    }),
+    commonjs({
+      include: "node_modules/**",
+    }),
+  ],
 };
