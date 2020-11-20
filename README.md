@@ -1,4 +1,4 @@
-# Obsidian Daily Notes interface
+# Obsidian Daily Notes interface [FOR DEVELOPERS]
 
 Replicates the daily-notes plugin in Obsidian but allows creating a note for any day (past or present).
 
