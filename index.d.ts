@@ -11,4 +11,5 @@ export interface IDailyNoteSettings {
 
 export function appHasDailyNotesPluginLoaded(): IDailyNoteSettings;
 export function createDailyNote(date: Moment): Promise<TFile>;
+export function getDailyNote(date: Moment): TFile | null;
 export function getTemplateContents(template: string): Promise<string>;

@@ -109,3 +109,12 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
     new Notice("Unable to create new file.");
   }
 }
+
+export function getDailyNote(date: Moment): TFile | null {
+  const { vault } = window.app;
+  const dailyNoteSettings = getDailyNoteSettings();
+
+  const formattedDate = date.format(dailyNoteSettings.format);
+  const dailyNotePath = getNotePath(dailyNoteSettings.folder, formattedDate);
+  return vault.getAbstractFileByPath(dailyNotePath) as TFile;
+}
