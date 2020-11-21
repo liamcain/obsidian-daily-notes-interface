@@ -1,10 +1,14 @@
 {
   "name": "obsidian-daily-notes-interface",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Interface for creating daily notes in Obsidian",
   "author": "liamcain",
-  "main": "index.js",
+  "main": "./dist/main.js",
   "license": "MIT",
+  "repository": "github.com/liamcain/obsidian-daily-notes-interface",
+  "bin": {
+    "obsidian-daily-notes-interface": "./dist/main.js"
+  },
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "npm run lint && rollup -c"
