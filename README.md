@@ -8,10 +8,10 @@ The best way to use this package is to add it to your dependencies:
 
 ```
 # if you use npm:
-npm install --save liamcain/obsidian-daily-notes-interface#main
+npm install --save obsidian-daily-notes-interface
 
 # or if you use Yarn:
-yarn add liamcain/obsidian-daily-notes-interface#main
+yarn add obsidian-daily-notes-interface
 ```
 
 ## Basic Usage
