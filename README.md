@@ -1,3 +1,5 @@
+[![NPM](https://nodei.co/npm/obsidian-daily-notes-interface.png?mini=true)](https://npmjs.org/package/obsidian-daily-notes-interface)
+
 # Obsidian Daily Notes interface [FOR DEVELOPERS]
 
 Replicates the daily-notes plugin in Obsidian but allows creating a note for any day (past or present).
