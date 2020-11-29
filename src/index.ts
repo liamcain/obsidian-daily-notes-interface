@@ -1,6 +1,6 @@
 import type { Moment } from "moment";
 import { join } from "path";
-import { normalizePath, App, Notice, TFile } from "obsidian";
+import { normalizePath, App, Notice, TFile, TFolder } from "obsidian";
 
 export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
 
@@ -110,11 +110,37 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
   }
 }
 
-export function getDailyNote(date: Moment): TFile | null {
+export function getDailyNote(date: Moment): TFile {
+  /**
+   * Look for an exact match filename first, if one doesn't
+   * exist, walk the folder and find any files on the same day.
+   *
+   * (This allows filenames to contain hour/minute/second)
+   */
+  const { moment } = window;
   const { vault } = window.app;
-  const dailyNoteSettings = getDailyNoteSettings();
+  const { format, folder } = getDailyNoteSettings();
 
-  const formattedDate = date.format(dailyNoteSettings.format);
-  const dailyNotePath = getNotePath(dailyNoteSettings.folder, formattedDate);
-  return vault.getAbstractFileByPath(dailyNotePath) as TFile;
+  const formattedDate = date.format(format);
+  const dailyNotePath = getNotePath(folder, formattedDate);
+  const exactMatch = vault.getAbstractFileByPath(dailyNotePath) as TFile;
+
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const dailyNotesFolder = folder
+    ? (vault.getAbstractFileByPath(folder) as TFolder)
+    : vault.getRoot();
+
+  for (const loadedFile of dailyNotesFolder.children) {
+    if (loadedFile instanceof TFile) {
+      const noteDate = moment(loadedFile.basename, format, true);
+      if (noteDate.isValid() && noteDate.isSame(date, "day")) {
+        return loadedFile;
+      }
+    }
+  }
+
+  return null;
 }
