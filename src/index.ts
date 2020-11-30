@@ -11,6 +11,11 @@ declare global {
   }
 }
 
+interface IDailyNote {
+  file: TFile;
+  date: Moment;
+}
+
 export interface IDailyNoteSettings {
   folder?: string;
   format?: string;
@@ -110,14 +115,12 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
   }
 }
 
-export function getDailyNote(date: Moment): TFile {
+export function getDailyNote(date: Moment, dailyNotes: IDailyNote[]): TFile {
   /**
    * Look for an exact match filename first, if one doesn't
-   * exist, walk the folder and find any files on the same day.
-   *
-   * (This allows filenames to contain hour/minute/second)
+   * exist, walk through all the daily notes and find any files
+   * on the same day.
    */
-  const { moment } = window;
   const { vault } = window.app;
   const { format, folder } = getDailyNoteSettings();
 
@@ -129,18 +132,39 @@ export function getDailyNote(date: Moment): TFile {
     return exactMatch;
   }
 
-  const dailyNotesFolder = folder
-    ? (vault.getAbstractFileByPath(folder) as TFolder)
-    : vault.getRoot();
-
-  for (const loadedFile of dailyNotesFolder.children) {
-    if (loadedFile instanceof TFile) {
-      const noteDate = moment(loadedFile.basename, format, true);
-      if (noteDate.isValid() && noteDate.isSame(date, "day")) {
-        return loadedFile;
-      }
+  for (const dailyNote of dailyNotes) {
+    if (dailyNote.date.isSame(date, "day")) {
+      return dailyNote.file;
     }
   }
 
   return null;
+}
+
+export function getAllDailyNotes(): IDailyNote[] {
+  /**
+   * Find all daily notes in the daily note folder
+   */
+  const { moment } = window;
+  const { vault } = window.app;
+  const { format, folder } = getDailyNoteSettings();
+
+  const dailyNotesFolder = folder
+    ? (vault.getAbstractFileByPath(folder) as TFolder)
+    : vault.getRoot();
+
+  const dailyNotes: IDailyNote[] = [];
+  for (const loadedFile of dailyNotesFolder.children) {
+    if (loadedFile instanceof TFile) {
+      const noteDate = moment(loadedFile.basename, format, true);
+      if (noteDate.isValid()) {
+        dailyNotes.push({
+          date: noteDate,
+          file: loadedFile,
+        });
+      }
+    }
+  }
+
+  return dailyNotes;
 }

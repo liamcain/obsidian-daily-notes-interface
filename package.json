@@ -1,6 +1,6 @@
 {
   "name": "obsidian-daily-notes-interface",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Interface for creating daily notes in Obsidian",
   "author": "liamcain",
   "main": "./dist/main.js",
