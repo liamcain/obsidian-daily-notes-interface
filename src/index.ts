@@ -152,7 +152,7 @@ export function getAllDailyNotes(): IDailyNote[] {
   const { format, folder } = getDailyNoteSettings();
 
   const dailyNotesFolder = folder
-    ? (vault.getAbstractFileByPath(folder) as TFolder)
+    ? (vault.getAbstractFileByPath(normalizePath(folder)) as TFolder)
     : vault.getRoot();
 
   if (!dailyNotesFolder) {
