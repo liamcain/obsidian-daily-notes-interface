@@ -16,6 +16,8 @@ interface IDailyNote {
   date: Moment;
 }
 
+export class DailyNotesFolderMissingError extends Error {}
+
 export interface IDailyNoteSettings {
   folder?: string;
   format?: string;
@@ -152,6 +154,10 @@ export function getAllDailyNotes(): IDailyNote[] {
   const dailyNotesFolder = folder
     ? (vault.getAbstractFileByPath(folder) as TFolder)
     : vault.getRoot();
+
+  if (!dailyNotesFolder) {
+    throw new DailyNotesFolderMissingError("Failed to find daily notes folder");
+  }
 
   const dailyNotes: IDailyNote[] = [];
   for (const loadedFile of dailyNotesFolder.children) {

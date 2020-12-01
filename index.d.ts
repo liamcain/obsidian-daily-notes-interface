@@ -20,3 +20,5 @@ export function getDailyNote(date: Moment, dailyNotes: IDailyNote[]): TFile;
 export function getAllDailyNotes(): IDailyNote[];
 export function getDailyNoteSettings(): IDailyNoteSettings;
 export function getTemplateContents(template: string): Promise<string>;
+
+export class DailyNotesFolderMissingError extends Error {}
