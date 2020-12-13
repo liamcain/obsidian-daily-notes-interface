@@ -45,8 +45,7 @@
     },
     "moduleFileExtensions": [
       "js",
-      "ts",
-      "svelte"
+      "ts"
     ]
   }
 }
