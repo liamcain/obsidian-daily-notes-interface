@@ -1,6 +1,6 @@
 import type { Moment } from "moment";
 import { join } from "path";
-import { normalizePath, App, Notice, TFile, TFolder } from "obsidian";
+import { normalizePath, App, Notice, TFile, TFolder, Vault } from "obsidian";
 
 export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
 
@@ -72,7 +72,10 @@ export async function getTemplateContents(template: string): Promise<string> {
     const contents = await vault.cachedRead(templateFile);
     return contents;
   } catch (err) {
-    console.error(`Failed to read daily note template '${templatePath}'`, err);
+    console.error(
+      `Failed to read the daily note template '${templatePath}'`,
+      err
+    );
     new Notice("Failed to read the daily note template");
     return "";
   }
@@ -102,7 +105,7 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
       templateContents
         .replace(
           /{{\s*(date|time)\s*:(.*?)}}/gi,
-          (_, timeOrDate, momentFormat) => {
+          (_, _timeOrDate, momentFormat) => {
             return date.format(momentFormat.trim());
           }
         )
@@ -151,26 +154,26 @@ export function getAllDailyNotes(): IDailyNote[] {
   const { vault } = window.app;
   const { format, folder } = getDailyNoteSettings();
 
-  const dailyNotesFolder = folder
-    ? (vault.getAbstractFileByPath(normalizePath(folder)) as TFolder)
-    : vault.getRoot();
+  const dailyNotesFolder = vault.getAbstractFileByPath(
+    normalizePath(folder)
+  ) as TFolder;
 
   if (!dailyNotesFolder) {
     throw new DailyNotesFolderMissingError("Failed to find daily notes folder");
   }
 
   const dailyNotes: IDailyNote[] = [];
-  for (const loadedFile of dailyNotesFolder.children) {
-    if (loadedFile instanceof TFile) {
-      const noteDate = moment(loadedFile.basename, format, true);
+  Vault.recurseChildren(dailyNotesFolder, (note) => {
+    if (note instanceof TFile) {
+      const noteDate = moment(note.basename, format, true);
       if (noteDate.isValid()) {
         dailyNotes.push({
           date: noteDate,
-          file: loadedFile,
+          file: note,
         });
       }
     }
-  }
+  });
 
   return dailyNotes;
 }

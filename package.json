@@ -11,7 +11,9 @@
   },
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "build": "npm run lint && rollup -c"
+    "build": "npm run lint && rollup -c",
+    "test": "jest",
+    "test:watch": "yarn test -- --watch"
   },
   "dependencies": {
     "obsidian": "obsidianmd/obsidian-api#master",
@@ -21,12 +23,30 @@
     "@rollup/plugin-commonjs": "16.0.0",
     "@rollup/plugin-node-resolve": "10.0.0",
     "@rollup/plugin-typescript": "6.1.0",
+    "@types/jest": "^26.0.15",
     "@types/moment": "^2.13.0",
     "@types/node": "14.14.8",
     "@typescript-eslint/eslint-plugin": "4.8.1",
     "@typescript-eslint/parser": "4.8.1",
     "eslint": "7.13.0",
+    "jest": "26.6.3",
+    "moment": "2.29.1",
     "rollup": "2.33.3",
+    "ts-jest": "^26.4.4",
     "typescript": "4.0.5"
+  },
+  "jest": {
+    "clearMocks": true,
+    "moduleNameMapper": {
+      "src/(.*)": "<rootDir>/src/$1"
+    },
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "svelte"
+    ]
   }
 }
