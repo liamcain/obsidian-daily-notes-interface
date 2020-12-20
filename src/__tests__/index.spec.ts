@@ -146,20 +146,11 @@ describe("getAllDailyNotes", () => {
     const fileC = createFile("2020-12-03", "");
     createFolder("/", [fileA, fileB, fileC]);
 
-    expect(dailyNotesInterface.getAllDailyNotes()).toEqual([
-      {
-        file: fileA,
-        date: moment("2020-12-01", "YYYY-MM-DD", true),
-      },
-      {
-        file: fileB,
-        date: moment("2020-12-02", "YYYY-MM-DD", true),
-      },
-      {
-        file: fileC,
-        date: moment("2020-12-03", "YYYY-MM-DD", true),
-      },
-    ]);
+    expect(dailyNotesInterface.getAllDailyNotes()).toEqual({
+      "2020-12-01T00:00:00-05:00": fileA,
+      "2020-12-02T00:00:00-05:00": fileB,
+      "2020-12-03T00:00:00-05:00": fileC,
+    });
   });
 
   test("returns a list of all daily notes including files nested in folders", () => {
@@ -174,20 +165,11 @@ describe("getAllDailyNotes", () => {
     const fileC = createFile("2020-12-03", "");
     createFolder("/", [fileA, fileB, createFolder("foo", [fileC])]);
 
-    expect(dailyNotesInterface.getAllDailyNotes()).toEqual([
-      {
-        file: fileA,
-        date: moment("2020-12-01", "YYYY-MM-DD", true),
-      },
-      {
-        file: fileB,
-        date: moment("2020-12-02", "YYYY-MM-DD", true),
-      },
-      {
-        file: fileC,
-        date: moment("2020-12-03", "YYYY-MM-DD", true),
-      },
-    ]);
+    expect(dailyNotesInterface.getAllDailyNotes()).toEqual({
+      "2020-12-01T00:00:00-05:00": fileA,
+      "2020-12-02T00:00:00-05:00": fileB,
+      "2020-12-03T00:00:00-05:00": fileC,
+    });
   });
 });
 
@@ -208,7 +190,9 @@ describe("getDailyNote", () => {
     expect(
       dailyNotesInterface.getDailyNote(
         moment("2020-12-01", "YYYY-MM-DD", true),
-        []
+        {
+          "2020-12-01T00:00:00-05:00": fileA,
+        }
       )
     ).toEqual(fileA);
   });
@@ -221,17 +205,13 @@ describe("getDailyNote", () => {
     });
 
     const fileA = createFile("2020-12-01-0408", "");
-    const dateA = moment("2020-12-01-0408", "YYYY-MM-DD-HHmm", true);
 
     expect(
       dailyNotesInterface.getDailyNote(
         moment("2020-12-01-0745", "YYYY-MM-DD-HHmm", true),
-        [
-          {
-            file: fileA,
-            date: dateA,
-          },
-        ]
+        {
+          "2020-12-01T00:00:00-05:00": fileA,
+        }
       )
     ).toEqual(fileA);
   });
@@ -244,17 +224,13 @@ describe("getDailyNote", () => {
     });
 
     const fileA = createFile("2020-12-03", "");
-    const dateA = moment("2020-12-03", "YYYY-MM-DD", true);
 
     expect(
       dailyNotesInterface.getDailyNote(
         moment("2020-12-01", "YYYY-MM-DD", true),
-        [
-          {
-            file: fileA,
-            date: dateA,
-          },
-        ]
+        {
+          "2020-12-03": fileA,
+        }
       )
     ).toEqual(null);
   });

@@ -11,11 +11,6 @@ declare global {
   }
 }
 
-interface IDailyNote {
-  file: TFile;
-  date: Moment;
-}
-
 export class DailyNotesFolderMissingError extends Error {}
 
 export interface IDailyNoteSettings {
@@ -81,6 +76,16 @@ export async function getTemplateContents(template: string): Promise<string> {
   }
 }
 
+export function getDateFromFile(file: TFile): Moment | null {
+  const { format } = getDailyNoteSettings();
+  const noteDate = window.moment(file.basename, format, true);
+  return noteDate.isValid() ? noteDate : null;
+}
+
+export function getDateUID(date: Moment): string {
+  return date.clone().startOf("day").format();
+}
+
 /**
  * This function mimics the behavior of the daily-notes plugin
  * so it will replace {{date}}, {{title}}, and {{time}} with the
@@ -120,39 +125,20 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
   }
 }
 
-export function getDailyNote(date: Moment, dailyNotes: IDailyNote[]): TFile {
-  /**
-   * Look for an exact match filename first, if one doesn't
-   * exist, walk through all the daily notes and find any files
-   * on the same day.
-   */
-  const { vault } = window.app;
-  const { format, folder } = getDailyNoteSettings();
-
-  const formattedDate = date.format(format);
-  const dailyNotePath = getNotePath(folder, formattedDate);
-  const exactMatch = vault.getAbstractFileByPath(dailyNotePath) as TFile;
-
-  if (exactMatch) {
-    return exactMatch;
-  }
-
-  for (const dailyNote of dailyNotes) {
-    if (dailyNote.date.isSame(date, "day")) {
-      return dailyNote.file;
-    }
-  }
-
-  return null;
+export function getDailyNote(
+  date: Moment,
+  dailyNotes: Record<string, TFile>
+): TFile {
+  const dateString = date.clone().startOf("day").format();
+  return dailyNotes[dateString] ?? null;
 }
 
-export function getAllDailyNotes(): IDailyNote[] {
+export function getAllDailyNotes(): Record<string, TFile> {
   /**
    * Find all daily notes in the daily note folder
    */
-  const { moment } = window;
   const { vault } = window.app;
-  const { format, folder } = getDailyNoteSettings();
+  const { folder } = getDailyNoteSettings();
 
   const dailyNotesFolder = vault.getAbstractFileByPath(
     normalizePath(folder)
@@ -162,15 +148,13 @@ export function getAllDailyNotes(): IDailyNote[] {
     throw new DailyNotesFolderMissingError("Failed to find daily notes folder");
   }
 
-  const dailyNotes: IDailyNote[] = [];
+  const dailyNotes: Record<string, TFile> = {};
   Vault.recurseChildren(dailyNotesFolder, (note) => {
     if (note instanceof TFile) {
-      const noteDate = moment(note.basename, format, true);
-      if (noteDate.isValid()) {
-        dailyNotes.push({
-          date: noteDate,
-          file: note,
-        });
+      const date = getDateFromFile(note);
+      if (date) {
+        const dateString = getDateUID(date);
+        dailyNotes[dateString] = note;
       }
     }
   });

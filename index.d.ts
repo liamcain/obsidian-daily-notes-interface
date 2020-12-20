@@ -9,15 +9,16 @@ export interface IDailyNoteSettings {
   template?: string;
 }
 
-export interface IDailyNote {
-  file: TFile;
-  date: Moment;
-}
+export function getDateFromFile(file: TFile): Moment | null;
+export function getDateUID(date: Moment): string;
 
 export function appHasDailyNotesPluginLoaded(): IDailyNoteSettings;
 export function createDailyNote(date: Moment): Promise<TFile>;
-export function getDailyNote(date: Moment, dailyNotes: IDailyNote[]): TFile;
-export function getAllDailyNotes(): IDailyNote[];
+export function getDailyNote(
+  date: Moment,
+  dailyNotes: Record<string, TFile>
+): TFile;
+export function getAllDailyNotes(): Record<string, TFile>;
 export function getDailyNoteSettings(): IDailyNoteSettings;
 export function getTemplateContents(template: string): Promise<string>;
 
