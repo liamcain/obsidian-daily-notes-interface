@@ -11,6 +11,8 @@ declare global {
   }
 }
 
+type IGranularity = "day" | "week" | "month";
+
 export class DailyNotesFolderMissingError extends Error {}
 
 export interface IDailyNoteSettings {
@@ -32,7 +34,6 @@ function getNotePath(directory: string, filename: string): string {
  */
 export function getDailyNoteSettings(): IDailyNoteSettings {
   try {
-    // XXX: Access private API for internal plugins
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const settings = (<any>window.app).internalPlugins.plugins["daily-notes"]
       .instance.options;
@@ -82,8 +83,12 @@ export function getDateFromFile(file: TFile): Moment | null {
   return noteDate.isValid() ? noteDate : null;
 }
 
-export function getDateUID(date: Moment): string {
-  return date.clone().startOf("day").format();
+export function getDateUID(
+  date: Moment,
+  granularity: IGranularity = "day"
+): string {
+  const ts = date.clone().startOf(granularity).format();
+  return `${granularity}-${ts}`;
 }
 
 /**
@@ -129,8 +134,7 @@ export function getDailyNote(
   date: Moment,
   dailyNotes: Record<string, TFile>
 ): TFile {
-  const dateString = date.clone().startOf("day").format();
-  return dailyNotes[dateString] ?? null;
+  return dailyNotes[getDateUID(date)] ?? null;
 }
 
 export function getAllDailyNotes(): Record<string, TFile> {

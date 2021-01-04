@@ -147,9 +147,9 @@ describe("getAllDailyNotes", () => {
     createFolder("/", [fileA, fileB, fileC]);
 
     expect(dailyNotesInterface.getAllDailyNotes()).toEqual({
-      "2020-12-01T00:00:00-05:00": fileA,
-      "2020-12-02T00:00:00-05:00": fileB,
-      "2020-12-03T00:00:00-05:00": fileC,
+      "day-2020-12-01T00:00:00-05:00": fileA,
+      "day-2020-12-02T00:00:00-05:00": fileB,
+      "day-2020-12-03T00:00:00-05:00": fileC,
     });
   });
 
@@ -166,9 +166,9 @@ describe("getAllDailyNotes", () => {
     createFolder("/", [fileA, fileB, createFolder("foo", [fileC])]);
 
     expect(dailyNotesInterface.getAllDailyNotes()).toEqual({
-      "2020-12-01T00:00:00-05:00": fileA,
-      "2020-12-02T00:00:00-05:00": fileB,
-      "2020-12-03T00:00:00-05:00": fileC,
+      "day-2020-12-01T00:00:00-05:00": fileA,
+      "day-2020-12-02T00:00:00-05:00": fileB,
+      "day-2020-12-03T00:00:00-05:00": fileC,
     });
   });
 });
@@ -191,7 +191,7 @@ describe("getDailyNote", () => {
       dailyNotesInterface.getDailyNote(
         moment("2020-12-01", "YYYY-MM-DD", true),
         {
-          "2020-12-01T00:00:00-05:00": fileA,
+          "day-2020-12-01T00:00:00-05:00": fileA,
         }
       )
     ).toEqual(fileA);
@@ -210,7 +210,7 @@ describe("getDailyNote", () => {
       dailyNotesInterface.getDailyNote(
         moment("2020-12-01-0745", "YYYY-MM-DD-HHmm", true),
         {
-          "2020-12-01T00:00:00-05:00": fileA,
+          "day-2020-12-01T00:00:00-05:00": fileA,
         }
       )
     ).toEqual(fileA);
@@ -314,6 +314,38 @@ describe("createDailyNote", () => {
     expect(console.error).toHaveBeenCalledWith(
       "Failed to create file: '/daily-notes/2020-10-05.md'",
       "error"
+    );
+  });
+});
+
+describe("getDateUID", () => {
+  test("it does not mutate the original date", () => {
+    const date = moment("2021-01-05T04:12:21-05:00");
+    const clonedDate = date.clone();
+
+    dailyNotesInterface.getDateUID(date);
+
+    expect(date.isSame(clonedDate)).toEqual(true);
+  });
+
+  test("it uses 'day' for the default granularity", () => {
+    const date = moment("2021-01-05T04:12:21-05:00");
+    expect(dailyNotesInterface.getDateUID(date)).toEqual(
+      "day-2021-01-05T00:00:00-05:00"
+    );
+  });
+
+  test("it supports 'week' granularity", () => {
+    const date = moment("2021-01-05T04:12:21-05:00");
+    expect(dailyNotesInterface.getDateUID(date, "week")).toEqual(
+      "week-2021-01-03T00:00:00-05:00"
+    );
+  });
+
+  test("it supports 'month' granularity", () => {
+    const date = moment("2021-01-05T04:12:21-05:00");
+    expect(dailyNotesInterface.getDateUID(date, "month")).toEqual(
+      "month-2021-01-01T00:00:00-05:00"
     );
   });
 });

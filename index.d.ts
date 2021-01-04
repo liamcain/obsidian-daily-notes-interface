@@ -1,8 +1,6 @@
 import type { Moment } from "moment";
 import { TFile } from "obsidian";
 
-export as namespace dailyNotes;
-
 export interface IDailyNoteSettings {
   folder?: string;
   format?: string;
@@ -10,7 +8,10 @@ export interface IDailyNoteSettings {
 }
 
 export function getDateFromFile(file: TFile): Moment | null;
-export function getDateUID(date: Moment): string;
+export function getDateUID(
+  date: Moment,
+  granularity: "day" | "week" | "month"
+): string;
 
 export function appHasDailyNotesPluginLoaded(): IDailyNoteSettings;
 export function createDailyNote(date: Moment): Promise<TFile>;
