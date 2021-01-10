@@ -13,7 +13,7 @@ export function getDateUID(
   granularity: "day" | "week" | "month"
 ): string;
 
-export function appHasDailyNotesPluginLoaded(): IDailyNoteSettings;
+export function appHasDailyNotesPluginLoaded(): boolean;
 export function createDailyNote(date: Moment): Promise<TFile>;
 export function getDailyNote(
   date: Moment,

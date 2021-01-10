@@ -4,6 +4,8 @@ import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
 import * as dailyNotesInterface from "../index";
 
+jest.mock("path");
+
 function setConfig(config: dailyNotesInterface.IDailyNoteSettings): void {
   // eslint-disable-next-line
   (<any>window.app).internalPlugins.plugins[

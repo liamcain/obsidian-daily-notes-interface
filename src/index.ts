@@ -1,4 +1,5 @@
 import type { Moment } from "moment";
+import type moment from "moment";
 import { join } from "path";
 import { normalizePath, App, Notice, TFile, TFolder, Vault } from "obsidian";
 
@@ -7,7 +8,7 @@ export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
 declare global {
   interface Window {
     app: App;
-    moment: () => Moment;
+    moment: typeof moment;
   }
 }
 
