@@ -109,6 +109,20 @@ export default function getMockApp(): App {
     tryTrigger: () => null,
     trigger: () => null,
     // @ts-ignore
+    plugins: {
+      plugins: {
+        calendar: {
+          instance: {
+            options: {
+              format: "",
+              template: "",
+              folder: "",
+            },
+          },
+        },
+      },
+    },
+    // @ts-ignore
     internalPlugins: {
       plugins: {
         "daily-notes": {
