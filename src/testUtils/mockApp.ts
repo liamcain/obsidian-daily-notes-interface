@@ -120,6 +120,15 @@ export default function getMockApp(): App {
             },
           },
         },
+        "monthly-notes": {
+          instance: {
+            options: {
+              format: "",
+              template: "",
+              folder: "",
+            },
+          },
+        },
       },
     },
     // @ts-ignore

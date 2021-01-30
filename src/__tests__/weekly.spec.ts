@@ -203,7 +203,7 @@ describe("getWeeklyNote", () => {
   test("returns null if there is no weekly note for a given date", () => {
     setConfig({
       folder: "/",
-      format: "YYYY-ww",
+      format: "gggg-ww",
       template: "template",
     });
 
@@ -230,11 +230,11 @@ describe("createWeeklyNote", () => {
       format: "gggg-MM-DD",
     });
 
-    const date = moment("2020-10-05", "YYYY-MM-DD", true);
+    const date = moment({ day: 5, month: 10, year: 2020 });
     await dailyNotesInterface.createWeeklyNote(date);
 
     expect(window.app.vault.create).toHaveBeenCalledWith(
-      "/weekly-notes/2020-10-05.md",
+      "/weekly-notes/2020-11-05.md",
       ""
     );
   });
@@ -248,11 +248,11 @@ describe("createWeeklyNote", () => {
 
     createFile("template", "template contents");
 
-    const date = moment("2020-10-05", "YYYY-MM-DD", true);
+    const date = moment({ day: 5, month: 10, year: 2020 });
     await dailyNotesInterface.createWeeklyNote(date);
 
     expect(window.app.vault.create).toHaveBeenCalledWith(
-      "/weekly-notes/2020-10-05.md",
+      "/weekly-notes/2020-11-05.md",
       "template contents"
     );
   });
@@ -291,15 +291,14 @@ describe("createWeeklyNote", () => {
 
     setConfig({
       folder: "/weekly-notes",
-      format: "gggg-MM-DD",
-      template: "template",
+      format: "gggg-[W]ww",
     });
-    const date = moment("2020-10-05", "YYYY-MM-DD", true);
+    const date = moment({ day: 5, month: 10, year: 2020 });
 
     await dailyNotesInterface.createWeeklyNote(date);
 
     expect(console.error).toHaveBeenCalledWith(
-      "Failed to create file: '/weekly-notes/2020-10-05.md'",
+      "Failed to create file: '/weekly-notes/2020-W45.md'",
       "error"
     );
   });

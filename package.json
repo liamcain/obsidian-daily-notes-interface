@@ -5,7 +5,10 @@
   "author": "liamcain",
   "main": "./dist/main.js",
   "license": "MIT",
-  "repository": "github.com/liamcain/obsidian-daily-notes-interface",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liamcain/obsidian-daily-notes-interface"
+  },
   "bin": {
     "obsidian-daily-notes-interface": "./dist/main.js"
   },

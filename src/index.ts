@@ -47,5 +47,13 @@ export {
   getWeeklyNoteSettings,
 } from "./weekly";
 
+export type { IMonthlyNoteSettings } from "./monthly";
+export {
+  createMonthlyNote,
+  getAllMonthlyNotes,
+  getMonthlyNote,
+  getMonthlyNoteSettings,
+} from "./monthly";
+
 export { getDateUID, getDateFromFile } from "./parse";
 export { getTemplateContents } from "./vault";

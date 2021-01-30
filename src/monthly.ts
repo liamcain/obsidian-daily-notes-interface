@@ -5,19 +5,19 @@ import { DEFAULT_MONTHLY_NOTE_FORMAT } from "./constants";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getNotePath, getTemplateContents } from "./vault";
 
-export class DailyNotesFolderMissingError extends Error {}
+export class MonthlyNotesFolderMissingError extends Error {}
 
-export interface IDailyNoteSettings {
+export interface IMonthlyNoteSettings {
   folder?: string;
   format?: string;
   template?: string;
 }
 
 /**
- * Read the user settings for the `daily-notes` plugin
+ * Read the user settings for the `monthly-notes` plugin
  * to keep behavior of creating a new note in-sync.
  */
-export function getMonthlyNoteSettings(): IDailyNoteSettings {
+export function getMonthlyNoteSettings(): IMonthlyNoteSettings {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const settings = (<any>window.app).plugins.plugins["monthly-notes"]
@@ -28,18 +28,18 @@ export function getMonthlyNoteSettings(): IDailyNoteSettings {
       template: settings.template?.trim() || "",
     };
   } catch (err) {
-    console.info("No custom daily note settings found!", err);
+    console.info("No custom monthly note settings found!", err);
   }
 }
 
 /**
- * This function mimics the behavior of the daily-notes plugin
+ * This function mimics the behavior of the monthly-notes plugin
  * so it will replace {{date}}, {{title}}, and {{time}} with the
  * formatted timestamp.
  *
  * Note: it has an added bonus that it's not 'today' specific.
  */
-export async function createWeeklyNote(date: Moment): Promise<TFile> {
+export async function createMonthlyNote(date: Moment): Promise<TFile> {
   const { vault } = window.app;
   const { template, format, folder } = getMonthlyNoteSettings();
   const templateContents = await getTemplateContents(template);
@@ -65,35 +65,37 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
   }
 }
 
-export function getDailyNote(
+export function getMonthlyNote(
   date: Moment,
-  weeklyNotes: Record<string, TFile>
+  monthlyNotes: Record<string, TFile>
 ): TFile {
-  return weeklyNotes[getDateUID(date, "week")] ?? null;
+  return monthlyNotes[getDateUID(date, "month")] ?? null;
 }
 
-export function getAllWeeklyNotes(): Record<string, TFile> {
+export function getAllMonthlyNotes(): Record<string, TFile> {
   const { vault } = window.app;
   const { folder } = getMonthlyNoteSettings();
 
-  const dailyNotesFolder = vault.getAbstractFileByPath(
+  const monthlyNotesFolder = vault.getAbstractFileByPath(
     normalizePath(folder)
   ) as TFolder;
 
-  if (!dailyNotesFolder) {
-    throw new DailyNotesFolderMissingError("Failed to find daily notes folder");
+  if (!monthlyNotesFolder) {
+    throw new MonthlyNotesFolderMissingError(
+      "Failed to find monthly notes folder"
+    );
   }
 
-  const dailyNotes: Record<string, TFile> = {};
-  Vault.recurseChildren(dailyNotesFolder, (note) => {
+  const monthlyNotes: Record<string, TFile> = {};
+  Vault.recurseChildren(monthlyNotesFolder, (note) => {
     if (note instanceof TFile) {
       const date = getDateFromFile(note, "month");
       if (date) {
-        const dateString = getDateUID(date, "week");
-        dailyNotes[dateString] = note;
+        const dateString = getDateUID(date, "month");
+        monthlyNotes[dateString] = note;
       }
     }
   });
 
-  return dailyNotes;
+  return monthlyNotes;
 }
