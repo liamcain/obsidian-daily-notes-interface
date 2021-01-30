@@ -7,9 +7,13 @@ import * as dailyNotesInterface from "../index";
 
 jest.mock("path");
 
-function setConfig(config: dailyNotesInterface.IWeeklyNoteSettings): void {
+function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
   // eslint-disable-next-line
-  (<any>window.app).plugins.plugins["calendar"].instance.options = config;
+  (window.app as any).plugins.plugins["calendar"].options = {
+    weeklyNoteFolder: config.folder,
+    weeklyNoteFormat: config.format,
+    weeklyNoteTemplate: config.template,
+  };
 }
 
 describe("getDayOfWeekNumericalValue", () => {
@@ -144,9 +148,9 @@ describe("getAllWeeklyNotes", () => {
       template: "template",
     });
 
-    const fileA = createFile("2021-01-06", "");
-    const fileB = createFile("2021-01-14", "");
-    const fileC = createFile("2021-01-22", "");
+    const fileA = createFile("2021-W02", "");
+    const fileB = createFile("2021-W03", "");
+    const fileC = createFile("2021-W04", "");
     createFolder("/", [fileA, fileB, fileC]);
 
     expect(dailyNotesInterface.getAllWeeklyNotes()).toEqual({
@@ -159,13 +163,13 @@ describe("getAllWeeklyNotes", () => {
   test("returns a list of all weekly notes including files nested in folders", () => {
     setConfig({
       folder: "/",
-      format: "gggg-MM",
+      format: "gggg-[W]ww",
       template: "template",
     });
 
-    const fileA = createFile("2021-01-06", "");
-    const fileB = createFile("2021-01-14", "");
-    const fileC = createFile("2021-01-22", "");
+    const fileA = createFile("2021-W02", "");
+    const fileB = createFile("2021-W03", "");
+    const fileC = createFile("2021-W04", "");
     createFolder("/", [fileA, fileB, createFolder("foo", [fileC])]);
 
     expect(dailyNotesInterface.getAllWeeklyNotes()).toEqual({

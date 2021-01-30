@@ -31,7 +31,7 @@ export function appHasMonthlyNotesPluginLoaded(): boolean {
   return (<any>app).plugins.plugins["monthly-notes"]?.enabled ?? false;
 }
 
-export type { IDailyNoteSettings } from "./daily";
+export type { IGranularity, IPeriodicNoteSettings } from "./types";
 export {
   createDailyNote,
   getDailyNote,
@@ -39,7 +39,6 @@ export {
   getAllDailyNotes,
 } from "./daily";
 
-export type { IWeeklyNoteSettings } from "./weekly";
 export {
   createWeeklyNote,
   getAllWeeklyNotes,
@@ -47,7 +46,6 @@ export {
   getWeeklyNoteSettings,
 } from "./weekly";
 
-export type { IMonthlyNoteSettings } from "./monthly";
 export {
   createMonthlyNote,
   getAllMonthlyNotes,

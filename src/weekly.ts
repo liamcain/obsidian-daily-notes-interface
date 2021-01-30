@@ -19,13 +19,13 @@ export interface IWeeklyNoteSettings {
  */
 export function getWeeklyNoteSettings(): IWeeklyNoteSettings {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const settings = (<any>window.app).plugins.plugins["calendar"]?.instance
-      .options;
+    const settings =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (<any>window.app).plugins.getPlugin("calendar")?.options || {};
     return {
-      format: settings.format || DEFAULT_WEEKLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
+      format: settings.weeklyNoteFormat || DEFAULT_WEEKLY_NOTE_FORMAT,
+      folder: settings.weeklyNoteFolder?.trim() || "",
+      template: settings.weeklyNoteTemplate?.trim() || "",
     };
   } catch (err) {
     console.info("No custom weekly note settings found!", err);
@@ -114,7 +114,7 @@ export function getAllWeeklyNotes(): Record<string, TFile> {
   const weeklyNotes: Record<string, TFile> = {};
   Vault.recurseChildren(weeklyNotesFolder, (note) => {
     if (note instanceof TFile) {
-      const date = getDateFromFile(note, "day");
+      const date = getDateFromFile(note, "week");
       if (date) {
         const dateString = getDateUID(date, "week");
         weeklyNotes[dateString] = note;

@@ -3,25 +3,21 @@ import { App, normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
 import { DEFAULT_DAILY_NOTE_FORMAT } from "./constants";
 import { getDateFromFile, getDateUID } from "./parse";
+import { IPeriodicNoteSettings } from "./types";
 import { getTemplateContents, getNotePath } from "./vault";
 
 export class DailyNotesFolderMissingError extends Error {}
-
-export interface IDailyNoteSettings {
-  folder?: string;
-  format?: string;
-  template?: string;
-}
 
 /**
  * Read the user settings for the `daily-notes` plugin
  * to keep behavior of creating a new note in-sync.
  */
-export function getDailyNoteSettings(): IDailyNoteSettings {
+export function getDailyNoteSettings(): IPeriodicNoteSettings {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const settings = (<any>window.app).internalPlugins.plugins["daily-notes"]
-      ?.instance.options;
+    const settings =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (<any>window.app).internalPlugins.getPluginById("daily-notes")?.instance
+        ?.options || {};
     return {
       format: settings.format || DEFAULT_DAILY_NOTE_FORMAT,
       folder: settings.folder?.trim() || "",
