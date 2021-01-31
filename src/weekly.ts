@@ -1,36 +1,11 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
-import { DEFAULT_WEEKLY_NOTE_FORMAT } from "./constants";
 import { getDateFromFile, getDateUID } from "./parse";
+import { getWeeklyNoteSettings } from "./settings";
 import { getNotePath, getTemplateContents } from "./vault";
 
 export class WeeklyNotesFolderMissingError extends Error {}
-
-export interface IWeeklyNoteSettings {
-  folder?: string;
-  format?: string;
-  template?: string;
-}
-
-/**
- * Read the user settings for the `weekly-notes` plugin
- * to keep behavior of creating a new note in-sync.
- */
-export function getWeeklyNoteSettings(): IWeeklyNoteSettings {
-  try {
-    const settings =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (<any>window.app).plugins.getPlugin("calendar")?.options || {};
-    return {
-      format: settings.weeklyNoteFormat || DEFAULT_WEEKLY_NOTE_FORMAT,
-      folder: settings.weeklyNoteFolder?.trim() || "",
-      template: settings.weeklyNoteTemplate?.trim() || "",
-    };
-  } catch (err) {
-    console.info("No custom weekly note settings found!", err);
-  }
-}
 
 function getDaysOfWeek(): string[] {
   const { moment } = window;

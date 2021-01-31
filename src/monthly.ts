@@ -1,31 +1,11 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
-import { DEFAULT_MONTHLY_NOTE_FORMAT } from "./constants";
 import { getDateFromFile, getDateUID } from "./parse";
-import { IPeriodicNoteSettings } from "./types";
+import { getMonthlyNoteSettings } from "./settings";
 import { getNotePath, getTemplateContents } from "./vault";
 
 export class MonthlyNotesFolderMissingError extends Error {}
-
-/**
- * Read the user settings for the `monthly-notes` plugin
- * to keep behavior of creating a new note in-sync.
- */
-export function getMonthlyNoteSettings(): IPeriodicNoteSettings {
-  try {
-    const settings =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (<any>window.app).plugins.getPlugin("monthly-notes")?.options || {};
-    return {
-      format: settings.format || DEFAULT_MONTHLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
-    };
-  } catch (err) {
-    console.info("No custom monthly note settings found!", err);
-  }
-}
 
 /**
  * This function mimics the behavior of the monthly-notes plugin

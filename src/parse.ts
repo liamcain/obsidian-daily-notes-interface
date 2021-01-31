@@ -1,9 +1,11 @@
 import type { Moment } from "moment";
 import { TFile } from "obsidian";
 
-import { getDailyNoteSettings } from "./daily";
-import { getWeeklyNoteSettings } from "./weekly";
-import { getMonthlyNoteSettings } from "./monthly";
+import {
+  getDailyNoteSettings,
+  getWeeklyNoteSettings,
+  getMonthlyNoteSettings,
+} from "./settings";
 
 import { IGranularity } from "./types";
 

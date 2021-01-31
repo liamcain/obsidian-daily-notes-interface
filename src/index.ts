@@ -33,24 +33,18 @@ export function appHasMonthlyNotesPluginLoaded(): boolean {
 
 export type { IGranularity, IPeriodicNoteSettings } from "./types";
 export {
-  createDailyNote,
-  getDailyNote,
   getDailyNoteSettings,
-  getAllDailyNotes,
-} from "./daily";
-
-export {
-  createWeeklyNote,
-  getAllWeeklyNotes,
-  getWeeklyNote,
   getWeeklyNoteSettings,
-} from "./weekly";
+  getMonthlyNoteSettings,
+} from "./settings";
+export { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
+
+export { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
 
 export {
   createMonthlyNote,
   getAllMonthlyNotes,
   getMonthlyNote,
-  getMonthlyNoteSettings,
 } from "./monthly";
 
 export { getDateUID, getDateFromFile } from "./parse";
