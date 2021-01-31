@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import * as moment from "moment-timezone";
 
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
@@ -18,6 +18,7 @@ describe("getDailyNoteSettings", () => {
     window.app = getMockApp();
     window.existingFiles = {};
     window.moment = moment;
+    moment.tz.setDefault("America/New_York");
   });
 
   test("returns all the daily note settings", () => {

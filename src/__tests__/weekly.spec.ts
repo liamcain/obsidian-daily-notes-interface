@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import * as moment from "moment-timezone";
 
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
@@ -20,6 +20,7 @@ describe("getDayOfWeekNumericalValue", () => {
   beforeEach(() => {
     window.app = getMockApp();
     window.moment = moment;
+    moment.tz.setDefault("America/New_York");
   });
 
   describe("start week on Sunday", () => {

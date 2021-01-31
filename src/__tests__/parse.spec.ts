@@ -1,10 +1,15 @@
-import * as moment from "moment";
+import * as moment from "moment-timezone";
 
 import * as dailyNotesInterface from "../index";
 
 jest.mock("path");
 
 describe("getDateUID", () => {
+  beforeAll(() => {
+    window.moment = moment;
+    moment.tz.setDefault("America/New_York");
+  });
+
   test("it does not mutate the original date", () => {
     const date = moment("2021-01-05T04:12:21-05:00");
     const clonedDate = date.clone();
