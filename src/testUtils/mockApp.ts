@@ -28,8 +28,47 @@ export function createFolder(path: string, children: TAbstractFile[]): TFolder {
   return folder;
 }
 
+interface IPluginInstance {
+  _loaded: boolean;
+  options: Record<string, unknown>;
+}
+
+interface IInternalPluginInstance {
+  options: Record<string, unknown>;
+}
+
+interface IInternalPlugin {
+  instance: IInternalPluginInstance;
+}
+
 /* eslint-disable */
 export default function getMockApp(): App {
+  const pluginList: Record<string, IPluginInstance> = {
+    calendar: {
+      options: {},
+      _loaded: false,
+    },
+    "monthly-notes": {
+      _loaded: false,
+      options: {},
+    },
+  };
+  const plugins = {
+    plugins: pluginList,
+    getPlugin: (pluginId: string) => pluginList[pluginId],
+  };
+
+  const internalPluginList: Record<string, IInternalPlugin> = {
+    "daily-notes": {
+      instance: {
+        options: {},
+      },
+    },
+  };
+  const internalPlugins = {
+    plugins: internalPluginList,
+    getPluginById: (pluginId: string) => internalPluginList[pluginId],
+  };
   return {
     vault: {
       adapter: {
@@ -103,25 +142,10 @@ export default function getMockApp(): App {
       fileToLinktext: () => "",
       trigger: () => null,
     },
-    on: () => null,
-    off: () => null,
-    offref: () => null,
-    tryTrigger: () => null,
-    trigger: () => null,
     // @ts-ignore
-    internalPlugins: {
-      plugins: {
-        "daily-notes": {
-          instance: {
-            options: {
-              format: "",
-              template: "",
-              folder: "",
-            },
-          },
-        },
-      },
-    },
+    plugins,
+    // @ts-ignore
+    internalPlugins,
   };
 }
 /* eslint-enable */
