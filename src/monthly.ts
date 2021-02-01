@@ -31,6 +31,8 @@ export async function createMonthlyNote(date: Moment): Promise<TFile> {
             return date.format(momentFormat.trim());
           }
         )
+        .replace(/{{\s*date\s*}}/gi, filename)
+        .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
         .replace(/{{\s*title\s*}}/gi, filename)
     );
     return createdFile;

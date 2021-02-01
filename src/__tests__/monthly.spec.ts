@@ -8,7 +8,7 @@ jest.mock("path");
 
 function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
   // eslint-disable-next-line
-  (<any>window.app).plugins.plugins["monthly-notes"].options = config;
+  (<any>window.app).plugins.plugins["monthly-notes"].settings = config;
 }
 
 describe("getMonthlyNoteSettings", () => {
@@ -65,14 +65,14 @@ describe("appHasMonthlyNotesPluginLoaded", () => {
 
   test("returns true when monthly notes plugin is enabled", () => {
     // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["monthly-notes"].enabled = true;
+    (<any>window.app).plugins.plugins["monthly-notes"]._loaded = true;
 
     expect(dailyNotesInterface.appHasMonthlyNotesPluginLoaded()).toEqual(true);
   });
 
-  test("returns true when monthly notes plugin is enabled", () => {
+  test("returns false when monthly notes plugin is disabled", () => {
     // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["monthly-notes"].enabled = false;
+    (<any>window.app).plugins.plugins["monthly-notes"]._loaded = false;
 
     expect(dailyNotesInterface.appHasMonthlyNotesPluginLoaded()).toEqual(false);
   });

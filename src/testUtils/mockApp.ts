@@ -30,7 +30,8 @@ export function createFolder(path: string, children: TAbstractFile[]): TFolder {
 
 interface IPluginInstance {
   _loaded: boolean;
-  options: Record<string, unknown>;
+  settings?: Record<string, unknown>;
+  options?: Record<string, unknown>;
 }
 
 interface IInternalPluginInstance {
@@ -45,17 +46,24 @@ interface IInternalPlugin {
 export default function getMockApp(): App {
   const pluginList: Record<string, IPluginInstance> = {
     calendar: {
+      _loaded: true,
       options: {},
-      _loaded: false,
+    },
+    "weekly-notes": {
+      _loaded: true,
+      settings: {},
     },
     "monthly-notes": {
-      _loaded: false,
-      options: {},
+      _loaded: true,
+      settings: {},
     },
   };
   const plugins = {
     plugins: pluginList,
-    getPlugin: (pluginId: string) => pluginList[pluginId],
+    getPlugin: (pluginId: string) => {
+      const plugin = pluginList[pluginId];
+      return plugin._loaded && plugin;
+    },
   };
 
   const internalPluginList: Record<string, IInternalPlugin> = {

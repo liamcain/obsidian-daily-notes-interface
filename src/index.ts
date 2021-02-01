@@ -16,19 +16,23 @@ export function appHasDailyNotesPluginLoaded(): boolean {
 }
 
 /**
- * XXX: Currently "Weekly Notes" live in the calendar plugin.
- * For now, check for either Calendar plugin and Weekly Notes plugin plugin
+ * XXX: "Weekly Notes" live in either the Calendar plugin or the weekly-notes plugin.
+ * Check both until the weekly notes feature is removed from the Calendar plugin.
  */
 export function appHasWeeklyNotesPluginLoaded(): boolean {
   const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (<any>app).plugins.plugins["calendar"]?.enabled ?? false;
+  return (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    !!(<any>app).plugins.getPlugin("calendar") ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    !!(<any>app).plugins.getPlugin("weekly-notes")
+  );
 }
 
 export function appHasMonthlyNotesPluginLoaded(): boolean {
   const { app } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (<any>app).plugins.plugins["monthly-notes"]?.enabled ?? false;
+  return !!(<any>app).plugins.getPlugin("monthly-notes");
 }
 
 export {
@@ -44,9 +48,7 @@ export {
   getMonthlyNoteSettings,
 } from "./settings";
 export { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
-
 export { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
-
 export {
   createMonthlyNote,
   getAllMonthlyNotes,

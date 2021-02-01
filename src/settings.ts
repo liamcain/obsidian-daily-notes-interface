@@ -33,7 +33,9 @@ export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
   try {
     const settings =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (<any>window.app).plugins.getPlugin("calendar")?.options || {};
+      (<any>window.app).plugins.getPlugin("weekly-notes")?.options ||
+      (<any>window.app).plugins.getPlugin("calendar")?.options ||
+      {};
     return {
       format: settings.weeklyNoteFormat || DEFAULT_WEEKLY_NOTE_FORMAT,
       folder: settings.weeklyNoteFolder?.trim() || "",
@@ -52,7 +54,7 @@ export function getMonthlyNoteSettings(): IPeriodicNoteSettings {
   try {
     const settings =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (<any>window.app).plugins.getPlugin("monthly-notes")?.options || {};
+      (<any>window.app).plugins.getPlugin("monthly-notes")?.settings || {};
     return {
       format: settings.format || DEFAULT_MONTHLY_NOTE_FORMAT,
       folder: settings.folder?.trim() || "",

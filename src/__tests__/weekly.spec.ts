@@ -107,14 +107,15 @@ describe("appHasWeeklyNotesPluginLoaded", () => {
 
   test("returns true when weekly notes plugin is enabled", () => {
     // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["calendar"].enabled = true;
+    (<any>window.app).plugins.plugins["calendar"]._loaded = true;
 
     expect(dailyNotesInterface.appHasWeeklyNotesPluginLoaded()).toEqual(true);
   });
 
-  test("returns true when weekly notes plugin is enabled", () => {
+  test("returns false when weekly notes plugin is disabled", () => {
     // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["calendar"].enabled = false;
+    (<any>window.app).plugins.plugins["weekly-notes"]._loaded = false;
+    (<any>window.app).plugins.plugins["calendar"]._loaded = false;
 
     expect(dailyNotesInterface.appHasWeeklyNotesPluginLoaded()).toEqual(false);
   });
