@@ -31,6 +31,12 @@ export function appHasMonthlyNotesPluginLoaded(): boolean {
   return (<any>app).plugins.plugins["monthly-notes"]?.enabled ?? false;
 }
 
+export {
+  DEFAULT_DAILY_NOTE_FORMAT,
+  DEFAULT_WEEKLY_NOTE_FORMAT,
+  DEFAULT_MONTHLY_NOTE_FORMAT,
+} from "./constants";
+
 export type { IGranularity, IPeriodicNoteSettings } from "./types";
 export {
   getDailyNoteSettings,

@@ -11,6 +11,11 @@ export interface IPeriodicNoteSettings {
 export class DailyNotesFolderMissingError extends Error {}
 export class WeeklyNotesFolderMissingError extends Error {}
 
+// Constants
+export const DEFAULT_DAILY_NOTE_FORMAT = "YYYY-MM-DD";
+export const DEFAULT_WEEKLY_NOTE_FORMAT = "gggg-[W]ww";
+export const DEFAULT_MONTHLY_NOTE_FORMAT = "YYYY-MM";
+
 // Utils
 export function getDateFromFile(
   file: TFile,
