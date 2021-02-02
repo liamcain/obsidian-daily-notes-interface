@@ -7,8 +7,11 @@ import * as dailyNotesInterface from "../index";
 jest.mock("path");
 
 function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
-  // eslint-disable-next-line
-  (<any>window.app).plugins.plugins["monthly-notes"].settings = config;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const plugin = (<any>window.app).plugins.plugins["monthly-notes"];
+
+  plugin._loaded = true;
+  plugin.settings = config;
 }
 
 describe("getMonthlyNoteSettings", () => {

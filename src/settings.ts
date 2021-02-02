@@ -31,11 +31,14 @@ export function getDailyNoteSettings(): IPeriodicNoteSettings {
  */
 export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const pluginManager = (<any>window.app).plugins;
+
     const settings =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (<any>window.app).plugins.getPlugin("weekly-notes")?.options ||
-      (<any>window.app).plugins.getPlugin("calendar")?.options ||
+      pluginManager.getPlugin("weekly-notes")?.settings ||
+      pluginManager.getPlugin("calendar")?.options ||
       {};
+
     return {
       format: settings.weeklyNoteFormat || DEFAULT_WEEKLY_NOTE_FORMAT,
       folder: settings.weeklyNoteFolder?.trim() || "",
