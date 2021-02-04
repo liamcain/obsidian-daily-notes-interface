@@ -3,7 +3,8 @@ import { join } from "path";
 
 async function ensureFolderExists(path: string): Promise<void> {
   const dirs = path.split("/");
-  dirs.pop();
+
+  dirs.pop(); // remove basename
 
   let dir = "";
   while (dirs.length) {
