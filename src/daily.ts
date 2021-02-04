@@ -23,7 +23,7 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
 
   const templateContents = await getTemplateContents(template);
   const filename = date.format(format);
-  const normalizedPath = getNotePath(folder, filename);
+  const normalizedPath = await getNotePath(folder, filename);
 
   try {
     const createdFile = await vault.create(

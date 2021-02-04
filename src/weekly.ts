@@ -37,7 +37,7 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
   const { template, format, folder } = getWeeklyNoteSettings();
   const templateContents = await getTemplateContents(template);
   const filename = date.format(format);
-  const normalizedPath = getNotePath(folder, filename);
+  const normalizedPath = await getNotePath(folder, filename);
 
   try {
     const createdFile = await vault.create(

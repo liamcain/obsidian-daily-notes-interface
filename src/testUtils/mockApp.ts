@@ -49,13 +49,13 @@ export default function getMockApp(): App {
       _loaded: true,
       options: {},
     },
-    "weekly-notes": {
+    "periodic-notes": {
+      settings: {
+        daily: {},
+        monthly: {},
+        weekly: {},
+      },
       _loaded: true,
-      settings: {},
-    },
-    "monthly-notes": {
-      _loaded: true,
-      settings: {},
     },
   };
   const plugins = {

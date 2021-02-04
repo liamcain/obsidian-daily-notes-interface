@@ -16,7 +16,7 @@ export function appHasDailyNotesPluginLoaded(): boolean {
 }
 
 /**
- * XXX: "Weekly Notes" live in either the Calendar plugin or the weekly-notes plugin.
+ * XXX: "Weekly Notes" live in either the Calendar plugin or the periodic-notes plugin.
  * Check both until the weekly notes feature is removed from the Calendar plugin.
  */
 export function appHasWeeklyNotesPluginLoaded(): boolean {
@@ -25,14 +25,14 @@ export function appHasWeeklyNotesPluginLoaded(): boolean {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     !!(<any>app).plugins.getPlugin("calendar") ||
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    !!(<any>app).plugins.getPlugin("weekly-notes")
+    !!(<any>app).plugins.getPlugin("periodic-notes")
   );
 }
 
 export function appHasMonthlyNotesPluginLoaded(): boolean {
   const { app } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return !!(<any>app).plugins.getPlugin("monthly-notes");
+  return !!(<any>app).plugins.getPlugin("periodic-notes");
 }
 
 export {

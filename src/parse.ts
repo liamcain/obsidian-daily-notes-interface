@@ -31,7 +31,7 @@ export function getDateFromFile(
     month: getMonthlyNoteSettings,
   };
 
-  const { format } = getSettings[granularity]();
+  const format = getSettings[granularity]().format.split("/").pop();
   const noteDate = window.moment(file.basename, format, true);
   return noteDate.isValid() ? noteDate : null;
 }
