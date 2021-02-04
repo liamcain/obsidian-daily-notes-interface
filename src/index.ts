@@ -12,23 +12,37 @@ export function appHasDailyNotesPluginLoaded(): boolean {
   const { app } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dailyNotesPlugin = (<any>app).internalPlugins.plugins["daily-notes"];
-  return dailyNotesPlugin && dailyNotesPlugin.enabled;
+  if (dailyNotesPlugin && dailyNotesPlugin.enabled) {
+    return true;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.daily?.enabled;
 }
 
 /**
- * XXX: Currently "Weekly Notes" live in the calendar plugin.
- * For now, check for either Calendar plugin and Weekly Notes plugin plugin
+ * XXX: "Weekly Notes" live in either the Calendar plugin or the periodic-notes plugin.
+ * Check both until the weekly notes feature is removed from the Calendar plugin.
  */
 export function appHasWeeklyNotesPluginLoaded(): boolean {
   const { app } = window;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (<any>app).plugins.plugins["calendar"]?.enabled ?? false;
+  if ((<any>app).plugins.getPlugin("calendar")) {
+    return true;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.weekly?.enabled;
 }
 
 export function appHasMonthlyNotesPluginLoaded(): boolean {
   const { app } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (<any>app).plugins.plugins["monthly-notes"]?.enabled ?? false;
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.monthly?.enabled;
 }
 
 export {
@@ -44,9 +58,7 @@ export {
   getMonthlyNoteSettings,
 } from "./settings";
 export { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
-
 export { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
-
 export {
   createMonthlyNote,
   getAllMonthlyNotes,

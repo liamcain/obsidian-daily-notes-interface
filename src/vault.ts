@@ -1,11 +1,32 @@
 import { normalizePath, App, Notice } from "obsidian";
 import { join } from "path";
 
-export function getNotePath(directory: string, filename: string): string {
+async function ensureFolderExists(path: string): Promise<void> {
+  const dirs = path.split("/");
+
+  dirs.pop(); // remove basename
+
+  let dir = "";
+  while (dirs.length) {
+    dir = join(dir, dirs.shift()).replace(/\\/g, "/");
+    if (!window.app.vault.getAbstractFileByPath(dir)) {
+      await window.app.vault.createFolder(dir);
+    }
+  }
+}
+
+export async function getNotePath(
+  directory: string,
+  filename: string
+): Promise<string> {
   if (!filename.endsWith(".md")) {
     filename += ".md";
   }
-  return normalizePath(join(directory, filename));
+  const path = normalizePath(join(directory, filename));
+
+  await ensureFolderExists(path);
+
+  return path;
 }
 
 export async function getTemplateContents(template: string): Promise<string> {

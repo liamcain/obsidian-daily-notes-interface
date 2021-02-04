@@ -8,7 +8,7 @@ import { getNotePath, getTemplateContents } from "./vault";
 export class MonthlyNotesFolderMissingError extends Error {}
 
 /**
- * This function mimics the behavior of the monthly-notes plugin
+ * This function mimics the behavior of the daily-notes plugin
  * so it will replace {{date}}, {{title}}, and {{time}} with the
  * formatted timestamp.
  *
@@ -19,7 +19,7 @@ export async function createMonthlyNote(date: Moment): Promise<TFile> {
   const { template, format, folder } = getMonthlyNoteSettings();
   const templateContents = await getTemplateContents(template);
   const filename = date.format(format);
-  const normalizedPath = getNotePath(folder, filename);
+  const normalizedPath = await getNotePath(folder, filename);
 
   try {
     const createdFile = await vault.create(
@@ -31,6 +31,8 @@ export async function createMonthlyNote(date: Moment): Promise<TFile> {
             return date.format(momentFormat.trim());
           }
         )
+        .replace(/{{\s*date\s*}}/gi, filename)
+        .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
         .replace(/{{\s*title\s*}}/gi, filename)
     );
     return createdFile;

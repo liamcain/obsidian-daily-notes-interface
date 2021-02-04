@@ -8,8 +8,14 @@ import * as dailyNotesInterface from "../index";
 jest.mock("path");
 
 function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
-  // eslint-disable-next-line
-  (window.app as any).plugins.plugins["calendar"].options = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (<any>window.app).plugins.plugins["periodic-notes"]._loaded = false;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const plugin = (<any>window.app).plugins.plugins["calendar"];
+
+  plugin._loaded = true;
+  plugin.options = {
     weeklyNoteFolder: config.folder,
     weeklyNoteFormat: config.format,
     weeklyNoteTemplate: config.template,
@@ -107,14 +113,16 @@ describe("appHasWeeklyNotesPluginLoaded", () => {
 
   test("returns true when weekly notes plugin is enabled", () => {
     // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["calendar"].enabled = true;
+    (<any>window.app).plugins.plugins["calendar"]._loaded = true;
 
     expect(dailyNotesInterface.appHasWeeklyNotesPluginLoaded()).toEqual(true);
   });
 
-  test("returns true when weekly notes plugin is enabled", () => {
+  test("returns false when weekly notes plugin is disabled", () => {
     // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["calendar"].enabled = false;
+    (<any>window.app).plugins.plugins["periodic-notes"]._loaded = false;
+    // eslint-disable-next-line
+    (<any>window.app).plugins.plugins["calendar"]._loaded = false;
 
     expect(dailyNotesInterface.appHasWeeklyNotesPluginLoaded()).toEqual(false);
   });
