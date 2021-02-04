@@ -51,9 +51,24 @@ export default function getMockApp(): App {
     },
     "periodic-notes": {
       settings: {
-        daily: {},
-        monthly: {},
-        weekly: {},
+        daily: {
+          enabled: false,
+          format: "",
+          template: "",
+          folder: "",
+        },
+        weekly: {
+          enabled: false,
+          format: "",
+          template: "",
+          folder: "",
+        },
+        monthly: {
+          enabled: false,
+          format: "",
+          template: "",
+          folder: "",
+        },
       },
       _loaded: true,
     },

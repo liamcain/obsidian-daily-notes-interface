@@ -6,12 +6,14 @@ import * as dailyNotesInterface from "../index";
 
 jest.mock("path");
 
+moment.tz.setDefault("America/New_York");
+
 function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const plugin = (<any>window.app).plugins.plugins["periodic-notes"];
 
   plugin._loaded = true;
-  plugin.settings.monthly = config;
+  plugin.settings.monthly = { ...plugin.settings.monthly, ...config };
 }
 
 describe("getMonthlyNoteSettings", () => {
@@ -19,7 +21,6 @@ describe("getMonthlyNoteSettings", () => {
     window.app = getMockApp();
     window.existingFiles = {};
     window.moment = moment;
-    moment.tz.setDefault("America/New_York");
   });
 
   test("returns all the monthly note settings", () => {
@@ -67,15 +68,30 @@ describe("appHasMonthlyNotesPluginLoaded", () => {
   });
 
   test("returns true when periodic-notes plugin is enabled", () => {
-    // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["periodic-notes"]._loaded = true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const periodicNotes = (<any>window.app).plugins.plugins["periodic-notes"];
+    periodicNotes._loaded = true;
+    periodicNotes.settings.monthly.enabled = true;
 
     expect(dailyNotesInterface.appHasMonthlyNotesPluginLoaded()).toEqual(true);
   });
 
+  test("returns false when periodic-notes plugin is enabled and weekly is disabled", () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const periodicNotes = (<any>window.app).plugins.plugins["periodic-notes"];
+
+    periodicNotes._loaded = true;
+    periodicNotes.settings.monthly.enabled = false;
+
+    expect(dailyNotesInterface.appHasMonthlyNotesPluginLoaded()).toEqual(false);
+  });
+
   test("returns false when periodic-notes plugin is disabled", () => {
-    // eslint-disable-next-line
-    (<any>window.app).plugins.plugins["periodic-notes"]._loaded = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const periodicNotes = (<any>window.app).plugins.plugins["periodic-notes"];
+
+    periodicNotes._loaded = false;
+    periodicNotes.settings.monthly.enabled = false;
 
     expect(dailyNotesInterface.appHasMonthlyNotesPluginLoaded()).toEqual(false);
   });
@@ -141,6 +157,8 @@ describe("getAllMonthlyNotes", () => {
 
 describe("getMonthlyNote", () => {
   beforeEach(() => {
+    window.app = getMockApp();
+    window.moment = moment;
     window.existingFiles = {};
   });
 
@@ -167,7 +185,6 @@ describe("getMonthlyNote", () => {
     setConfig({
       folder: "/",
       format: "YYYY-ww",
-      template: "template",
     });
 
     const fileA = createFile("2020-01", "");
@@ -182,6 +199,8 @@ describe("getMonthlyNote", () => {
 
 describe("createMonthlyNote", () => {
   beforeEach(() => {
+    window.app = getMockApp();
+    window.moment = moment;
     window.existingFiles = {};
   });
 

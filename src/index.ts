@@ -12,7 +12,13 @@ export function appHasDailyNotesPluginLoaded(): boolean {
   const { app } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dailyNotesPlugin = (<any>app).internalPlugins.plugins["daily-notes"];
-  return dailyNotesPlugin && dailyNotesPlugin.enabled;
+  if (dailyNotesPlugin && dailyNotesPlugin.enabled) {
+    return true;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.daily?.enabled;
 }
 
 /**
@@ -21,18 +27,21 @@ export function appHasDailyNotesPluginLoaded(): boolean {
  */
 export function appHasWeeklyNotesPluginLoaded(): boolean {
   const { app } = window;
-  return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    !!(<any>app).plugins.getPlugin("calendar") ||
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    !!(<any>app).plugins.getPlugin("periodic-notes")
-  );
+
+  if (!!(<any>app).plugins.getPlugin("calendar")) {
+    return true;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.weekly?.enabled;
 }
 
 export function appHasMonthlyNotesPluginLoaded(): boolean {
   const { app } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return !!(<any>app).plugins.getPlugin("periodic-notes");
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.monthly?.enabled;
 }
 
 export {
