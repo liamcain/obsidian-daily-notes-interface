@@ -28,7 +28,8 @@ export function appHasDailyNotesPluginLoaded(): boolean {
 export function appHasWeeklyNotesPluginLoaded(): boolean {
   const { app } = window;
 
-  if (!!(<any>app).plugins.getPlugin("calendar")) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if ((<any>app).plugins.getPlugin("calendar")) {
     return true;
   }
 
