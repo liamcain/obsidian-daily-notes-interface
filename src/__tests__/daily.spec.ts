@@ -3,18 +3,9 @@ import * as moment from "moment-timezone";
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
 import * as dailyNotesInterface from "../index";
+import { setDailyConfig } from "../testUtils/utils";
 
 jest.mock("path");
-
-function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (<any>window.app).plugins.plugins["periodic-notes"]._loaded = false;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (<any>window.app).internalPlugins.plugins[
-    "daily-notes"
-  ].instance.options = config;
-}
 
 describe("getDailyNoteSettings", () => {
   beforeEach(() => {
@@ -25,7 +16,7 @@ describe("getDailyNoteSettings", () => {
   });
 
   test("returns all the daily note settings", () => {
-    setConfig({
+    setDailyConfig({
       folder: "foo",
       format: "YYYY-MM-DD-HHmm",
       template: "template",
@@ -39,7 +30,7 @@ describe("getDailyNoteSettings", () => {
   });
 
   test("cleanses data", () => {
-    setConfig({
+    setDailyConfig({
       folder: " foo/bar ",
       format: "MMM YYYY-MM-DD",
       template: "   path/to/template  ",
@@ -91,7 +82,7 @@ describe("getAllDailyNotes", () => {
   });
 
   test("throws error if daily note folder can't be found", () => {
-    setConfig({
+    setDailyConfig({
       folder: "missing-folder/",
       format: "YYYY-MM-DD",
       template: "template",
@@ -103,7 +94,7 @@ describe("getAllDailyNotes", () => {
   });
 
   test("returns a list of all daily notes with no nested folders", () => {
-    setConfig({
+    setDailyConfig({
       folder: "/",
       format: "YYYY-MM-DD",
       template: "template",
@@ -122,7 +113,7 @@ describe("getAllDailyNotes", () => {
   });
 
   test("returns a list of all daily notes including files nested in folders", () => {
-    setConfig({
+    setDailyConfig({
       folder: "/",
       format: "YYYY-MM-DD",
       template: "template",

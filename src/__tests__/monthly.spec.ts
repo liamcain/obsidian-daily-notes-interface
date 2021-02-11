@@ -3,18 +3,11 @@ import * as moment from "moment-timezone";
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
 import * as dailyNotesInterface from "../index";
+import { setMonthlyConfig } from "../testUtils/utils";
 
 jest.mock("path");
 
 moment.tz.setDefault("America/New_York");
-
-function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const plugin = (<any>window.app).plugins.plugins["periodic-notes"];
-
-  plugin._loaded = true;
-  plugin.settings.monthly = { ...plugin.settings.monthly, ...config };
-}
 
 describe("getMonthlyNoteSettings", () => {
   beforeEach(() => {
@@ -24,7 +17,7 @@ describe("getMonthlyNoteSettings", () => {
   });
 
   test("returns all the monthly note settings", () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "foo",
       format: "YYYY-MM",
       template: "template",
@@ -38,7 +31,7 @@ describe("getMonthlyNoteSettings", () => {
   });
 
   test("cleanses data", () => {
-    setConfig({
+    setMonthlyConfig({
       folder: " foo/bar ",
       format: "YYYY-MM",
       template: "   path/to/template  ",
@@ -105,7 +98,7 @@ describe("getAllMonthlyNotes", () => {
   });
 
   test("throws error if monthly note folder can't be found", () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "missing-folder/",
       format: "YYYY-MM",
       template: "template",
@@ -117,7 +110,7 @@ describe("getAllMonthlyNotes", () => {
   });
 
   test("returns a list of all monthly notes with no nested folders", () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "/",
       format: "YYYY-MM",
       template: "template",
@@ -136,7 +129,7 @@ describe("getAllMonthlyNotes", () => {
   });
 
   test("returns a list of all monthly notes including files nested in folders", () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "/",
       format: "YYYY-MM",
       template: "template",
@@ -163,7 +156,7 @@ describe("getMonthlyNote", () => {
   });
 
   test("returns note on the same day even if the HH:MM:SS is different", () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "/",
       format: "YYYY-MM-HHmm",
       template: "template",
@@ -182,7 +175,7 @@ describe("getMonthlyNote", () => {
   });
 
   test("returns null if there is no monthly note for a given date", () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "/",
       format: "YYYY-ww",
     });
@@ -205,7 +198,7 @@ describe("createMonthlyNote", () => {
   });
 
   test("uses folder path from monthly note settings", async () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "/monthly-notes",
       format: "YYYY-MM",
     });
@@ -220,7 +213,7 @@ describe("createMonthlyNote", () => {
   });
 
   test("uses template contents when creating file", async () => {
-    setConfig({
+    setMonthlyConfig({
       folder: "/monthly-notes",
       format: "YYYY-MM",
       template: "template",
@@ -244,7 +237,7 @@ describe("createMonthlyNote", () => {
     );
     jest.spyOn(global.console, "error").mockImplementation();
 
-    setConfig({
+    setMonthlyConfig({
       folder: "/monthly-notes",
       format: "YYYY-MM",
       template: "template",

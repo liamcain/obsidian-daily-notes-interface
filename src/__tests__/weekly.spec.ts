@@ -4,23 +4,9 @@ import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
 import { getDayOfWeekNumericalValue } from "../weekly";
 import * as dailyNotesInterface from "../index";
+import { setWeeklyConfig } from "../testUtils/utils";
 
 jest.mock("path");
-
-function setConfig(config: dailyNotesInterface.IPeriodicNoteSettings): void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (<any>window.app).plugins.plugins["periodic-notes"]._loaded = false;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const plugin = (<any>window.app).plugins.plugins["calendar"];
-
-  plugin._loaded = true;
-  plugin.options = {
-    weeklyNoteFolder: config.folder,
-    weeklyNoteFormat: config.format,
-    weeklyNoteTemplate: config.template,
-  };
-}
 
 describe("getDayOfWeekNumericalValue", () => {
   beforeEach(() => {
@@ -68,7 +54,7 @@ describe("getWeeklyNoteSettings", () => {
   });
 
   test("returns all the weekly note settings", () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "foo",
       format: "gggg-MM-DD",
       template: "template",
@@ -82,7 +68,7 @@ describe("getWeeklyNoteSettings", () => {
   });
 
   test("cleanses data", () => {
-    setConfig({
+    setWeeklyConfig({
       folder: " foo/bar ",
       format: "gggg-MM-DD",
       template: "   path/to/template  ",
@@ -139,7 +125,7 @@ describe("getAllWeeklyNotes", () => {
   });
 
   test("throws error if weekly note folder can't be found", () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "missing-folder/",
       format: "gggg-[W]ww",
       template: "template",
@@ -151,7 +137,7 @@ describe("getAllWeeklyNotes", () => {
   });
 
   test("returns a list of all weekly notes with no nested folders", () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "/",
       format: "gggg-[W]ww",
       template: "template",
@@ -170,7 +156,7 @@ describe("getAllWeeklyNotes", () => {
   });
 
   test("returns a list of all weekly notes including files nested in folders", () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "/",
       format: "gggg-[W]ww",
       template: "template",
@@ -195,7 +181,7 @@ describe("getWeeklyNote", () => {
   });
 
   test("returns note on the same day even if the HH:MM:SS is different", () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "/",
       format: "gggg-[W]ww-HHmm",
       template: "template",
@@ -214,7 +200,7 @@ describe("getWeeklyNote", () => {
   });
 
   test("returns null if there is no weekly note for a given date", () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "/",
       format: "gggg-ww",
       template: "template",
@@ -238,7 +224,7 @@ describe("createWeeklyNote", () => {
   });
 
   test("uses folder path from weekly note settings", async () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "/weekly-notes",
       format: "gggg-MM-DD",
     });
@@ -253,7 +239,7 @@ describe("createWeeklyNote", () => {
   });
 
   test("uses template contents when creating file", async () => {
-    setConfig({
+    setWeeklyConfig({
       folder: "/weekly-notes",
       format: "gggg-MM-DD",
       template: "template",
@@ -274,7 +260,7 @@ describe("createWeeklyNote", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (<any>moment.localeData())._week.dow = 0;
 
-    setConfig({
+    setWeeklyConfig({
       folder: "/weekly-notes",
       format: "gggg-[W]ww",
       template: "template",
@@ -302,7 +288,7 @@ describe("createWeeklyNote", () => {
     );
     jest.spyOn(global.console, "error").mockImplementation();
 
-    setConfig({
+    setWeeklyConfig({
       folder: "/weekly-notes",
       format: "gggg-[W]ww",
     });
