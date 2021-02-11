@@ -77,45 +77,55 @@ describe("getDateFromFile", () => {
   });
 
   describe("weekly granularity", () => {
-    test("it supports formats with year and week number", () => {
-      setWeeklyConfig({
-        format: "gggg-[W]ww",
-      });
+    test("it supports formats with year and month", () => {
+      setWeeklyConfig({ format: "gggg-MM" });
+      const file = createFile("2021-07", "");
 
+      expect(
+        dailyNotesInterface.getDateFromFile(file, "week").format()
+      ).toEqual("2021-07-01T00:00:00-04:00");
+    });
+
+    test("it supports formats with year, month, and day", () => {
+      setWeeklyConfig({ format: "gggg-MM-DD" });
+      const file = createFile("2021-07-11", "");
+
+      expect(
+        dailyNotesInterface.getDateFromFile(file, "week").format()
+      ).toEqual("2021-07-11T00:00:00-04:00");
+    });
+
+    test("it supports formats with year and week number", () => {
+      setWeeklyConfig({ format: "gggg-[W]ww" });
       const file = createFile("2021-W07", "");
+
       expect(
         dailyNotesInterface.getDateFromFile(file, "week").format()
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
     test("it supports formats with year, week number, and month", () => {
-      setWeeklyConfig({
-        format: "gggg-[W]ww-MMM",
-      });
-
+      setWeeklyConfig({ format: "gggg-[W]ww-MMM" });
       const file = createFile("2021-W07-Feb", "");
+
       expect(
         dailyNotesInterface.getDateFromFile(file, "week").format()
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
     test("it supports formats with year, month number, week number", () => {
-      setWeeklyConfig({
-        format: "gggg-MM-[W]ww",
-      });
-
+      setWeeklyConfig({ format: "gggg-MM-[W]ww" });
       const file = createFile("2021-02-W07", "");
+
       expect(
         dailyNotesInterface.getDateFromFile(file, "week").format()
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
     test("it supports formats with year, month number, week number without prefix", () => {
-      setWeeklyConfig({
-        format: "gggg-MM-ww",
-      });
-
+      setWeeklyConfig({ format: "gggg-MM-ww" });
       const file = createFile("2021-02-07", "");
+
       expect(
         dailyNotesInterface.getDateFromFile(file, "week").format()
       ).toEqual("2021-02-07T00:00:00-05:00");

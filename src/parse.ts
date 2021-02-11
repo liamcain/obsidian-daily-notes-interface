@@ -21,19 +21,23 @@ export function getDateUID(
   return `${granularity}-${ts}`;
 }
 
+function removeEscapedCharacters(format: string): string {
+  return format.replace(/\[[^\]]*\]/g, ""); // remove everything within brackets
+}
+
 /**
  * XXX: When parsing dates that contain both week numbers and months,
  * Moment choses to ignore the week numbers. For the week dateUID, we
  * want the opposite behavior. Strip the MMM from the format to patch.
  */
-export function formatWithoutMonth(format: string): string {
-  return format.replace(/M{1,4}/g, "");
+function isFormatAmbiguous(format: string, granularity: IGranularity) {
+  if (granularity === "week") {
+    return /w/i.test(removeEscapedCharacters(format));
+  }
+  return false;
 }
 
-export function getDateFromFile(
-  file: TFile,
-  granularity: IGranularity
-): Moment | null {
+export function getUnambigouosFormat(granularity: IGranularity): string {
   const getSettings = {
     day: getDailyNoteSettings,
     week: getWeeklyNoteSettings,
@@ -41,13 +45,25 @@ export function getDateFromFile(
   };
 
   const format = getSettings[granularity]().format.split("/").pop();
-
-  if (granularity === "week") {
-    const weeklyFormat = formatWithoutMonth(format);
-    const noteDate = window.moment(file.basename, weeklyFormat); // forgiving mode
-    return noteDate.isValid() ? noteDate : null;
+  if (!isFormatAmbiguous(format, granularity)) {
+    return format;
   }
 
-  const noteDate = window.moment(file.basename, format, true);
+  const cleanFormat = removeEscapedCharacters(format);
+  if (/w/i.test(cleanFormat)) {
+    // If format contains week, remove month formatting
+    return format.replace(/M{1,4}/g, "");
+  }
+  return format;
+}
+
+export function getDateFromFile(
+  file: TFile,
+  granularity: IGranularity
+): Moment | null {
+  const format = getUnambigouosFormat(granularity);
+  const useStrictMode = !isFormatAmbiguous(format, granularity);
+
+  const noteDate = window.moment(file.basename, format, useStrictMode);
   return noteDate.isValid() ? noteDate : null;
 }
