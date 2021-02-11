@@ -77,7 +77,7 @@ describe("getDateFromFile", () => {
   });
 
   describe("weekly granularity", () => {
-    test("it supports formats with just year and week number", () => {
+    test("it supports formats with year and week number", () => {
       setWeeklyConfig({
         format: "gggg-[W]ww",
       });
@@ -88,7 +88,7 @@ describe("getDateFromFile", () => {
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
-    test("it supports formats with just year, week number, and month", () => {
+    test("it supports formats with year, week number, and month", () => {
       setWeeklyConfig({
         format: "gggg-[W]ww-MMM",
       });
@@ -99,7 +99,7 @@ describe("getDateFromFile", () => {
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
-    test("it supports formats with just year, month number, week number", () => {
+    test("it supports formats with year, month number, week number", () => {
       setWeeklyConfig({
         format: "gggg-MM-[W]ww",
       });
@@ -110,7 +110,7 @@ describe("getDateFromFile", () => {
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
-    test("it supports formats with just year, month number, week number without prefix", () => {
+    test("it supports formats with year, month number, week number without prefix", () => {
       setWeeklyConfig({
         format: "gggg-MM-ww",
       });
