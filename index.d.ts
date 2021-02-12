@@ -52,7 +52,7 @@ export function appHasMonthlyNotesPluginLoaded(): boolean;
 export function createMonthlyNote(date: Moment): Promise<TFile>;
 export function getMonthlyNote(
   date: Moment,
-  weeklyNotes: Record<string, TFile>
+  monthlyNotes: Record<string, TFile>
 ): TFile;
 export function getAllMonthlyNotes(): Record<string, TFile>;
 export function getMonthlyNoteSettings(): IPeriodicNoteSettings;
