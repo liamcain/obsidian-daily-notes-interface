@@ -130,5 +130,19 @@ describe("getDateFromFile", () => {
         dailyNotesInterface.getDateFromFile(file, "week").format()
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
+
+    test("ambiguous dates are still parsed strictly first", () => {
+      setWeeklyConfig({ format: "gggg-MM-[W]ww" });
+
+      const fileWithSuffix = createFile("2021-02-W07 Foo", "");
+      const fileWithSpaces = createFile("2021 02 W07", "");
+
+      expect(
+        dailyNotesInterface.getDateFromFile(fileWithSuffix, "week")
+      ).toBeNull();
+      expect(
+        dailyNotesInterface.getDateFromFile(fileWithSpaces, "week")
+      ).toBeNull();
+    });
   });
 });

@@ -32,12 +32,16 @@ function removeEscapedCharacters(format: string): string {
  */
 function isFormatAmbiguous(format: string, granularity: IGranularity) {
   if (granularity === "week") {
-    return /w/i.test(removeEscapedCharacters(format));
+    const cleanFormat = removeEscapedCharacters(format);
+    return /w/i.test(cleanFormat) && /M{1,4}/.test(cleanFormat);
   }
   return false;
 }
 
-export function getUnambigouosFormat(granularity: IGranularity): string {
+export function getDateFromFile(
+  file: TFile,
+  granularity: IGranularity
+): Moment | null {
   const getSettings = {
     day: getDailyNoteSettings,
     week: getWeeklyNoteSettings,
@@ -45,25 +49,25 @@ export function getUnambigouosFormat(granularity: IGranularity): string {
   };
 
   const format = getSettings[granularity]().format.split("/").pop();
-  if (!isFormatAmbiguous(format, granularity)) {
-    return format;
+  const noteDate = window.moment(file.basename, format, true);
+
+  if (!noteDate.isValid()) {
+    return null;
   }
 
-  const cleanFormat = removeEscapedCharacters(format);
-  if (/w/i.test(cleanFormat)) {
-    // If format contains week, remove month formatting
-    return format.replace(/M{1,4}/g, "");
+  if (isFormatAmbiguous(format, granularity)) {
+    if (granularity === "week") {
+      const cleanFormat = removeEscapedCharacters(format);
+      if (/w/i.test(cleanFormat)) {
+        return window.moment(
+          file.basename,
+          // If format contains week, remove month formatting
+          cleanFormat.replace(/M{1,4}/g, ""),
+          false
+        );
+      }
+    }
   }
-  return format;
-}
 
-export function getDateFromFile(
-  file: TFile,
-  granularity: IGranularity
-): Moment | null {
-  const format = getUnambigouosFormat(granularity);
-  const useStrictMode = !isFormatAmbiguous(format, granularity);
-
-  const noteDate = window.moment(file.basename, format, useStrictMode);
-  return noteDate.isValid() ? noteDate : null;
+  return noteDate;
 }
