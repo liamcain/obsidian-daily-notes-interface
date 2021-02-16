@@ -62,7 +62,7 @@ export function getDateFromFile(
         return window.moment(
           file.basename,
           // If format contains week, remove month formatting
-          cleanFormat.replace(/M{1,4}/g, ""),
+          format.replace(/M{1,4}/g, ""),
           false
         );
       }
