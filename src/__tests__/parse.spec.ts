@@ -95,6 +95,15 @@ describe("getDateFromFile", () => {
       ).toEqual("2021-07-11T00:00:00-04:00");
     });
 
+    test("it supports formats with partial year, month, and week number", () => {
+      setWeeklyConfig({ format: "21MM[W]ww" });
+      const file = createFile("2107W07", "");
+
+      expect(
+        dailyNotesInterface.getDateFromFile(file, "week").format()
+      ).toEqual("2021-02-07T00:00:00-05:00");
+    });
+
     test("it supports formats with year and week number", () => {
       setWeeklyConfig({ format: "gggg-[W]ww" });
       const file = createFile("2021-W07", "");
