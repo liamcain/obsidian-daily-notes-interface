@@ -122,6 +122,15 @@ describe("getDateFromFile", () => {
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
+    test("it supports formats with year, week number, and day", () => {
+      setWeeklyConfig({ format: "gggg-[W]ww-DD" });
+      const file = createFile("2021-W07-07", "");
+
+      expect(
+        dailyNotesInterface.getDateFromFile(file, "week").format()
+      ).toEqual("2021-02-07T00:00:00-05:00");
+    });
+
     test("it supports formats with year, month number, week number", () => {
       setWeeklyConfig({ format: "gggg-MM-[W]ww" });
       const file = createFile("2021-02-W07", "");
@@ -134,6 +143,15 @@ describe("getDateFromFile", () => {
     test("it supports formats with year, month number, week number without prefix", () => {
       setWeeklyConfig({ format: "gggg-MM-ww" });
       const file = createFile("2021-02-07", "");
+
+      expect(
+        dailyNotesInterface.getDateFromFile(file, "week").format()
+      ).toEqual("2021-02-07T00:00:00-05:00");
+    });
+
+    test("it supports year, month, day, week number", () => {
+      setWeeklyConfig({ format: "gggg-MM-DD_[W]ww" });
+      const file = createFile("2021-02-07_W07", "");
 
       expect(
         dailyNotesInterface.getDateFromFile(file, "week").format()
