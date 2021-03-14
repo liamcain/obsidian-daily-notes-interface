@@ -32,7 +32,14 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
         .replace(
           /{{\s*(date|time)\s*:(.*?)}}/gi,
           (_, _timeOrDate, momentFormat) => {
-            return date.format(momentFormat.trim());
+            const now = moment();
+            return date
+              .set({
+                hour: now.get("hour"),
+                minute: now.get("minute"),
+                second: now.get("second"),
+              })
+              .format(momentFormat.trim());
           }
         )
         .replace(/{{\s*date\s*}}/gi, filename)

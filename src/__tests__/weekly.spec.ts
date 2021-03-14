@@ -55,6 +55,7 @@ describe("getWeeklyNoteSettings", () => {
 
   test("returns all the weekly note settings", () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "foo",
       format: "gggg-MM-DD",
       template: "template",
@@ -69,6 +70,7 @@ describe("getWeeklyNoteSettings", () => {
 
   test("cleanses data", () => {
     setWeeklyConfig({
+      enabled: true,
       folder: " foo/bar ",
       format: "gggg-MM-DD",
       template: "   path/to/template  ",
@@ -126,6 +128,7 @@ describe("getAllWeeklyNotes", () => {
 
   test("throws error if weekly note folder can't be found", () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "missing-folder/",
       format: "gggg-[W]ww",
       template: "template",
@@ -138,6 +141,7 @@ describe("getAllWeeklyNotes", () => {
 
   test("returns a list of all weekly notes with no nested folders", () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "/",
       format: "gggg-[W]ww",
       template: "template",
@@ -157,6 +161,7 @@ describe("getAllWeeklyNotes", () => {
 
   test("returns a list of all weekly notes including files nested in folders", () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "/",
       format: "gggg-[W]ww",
       template: "template",
@@ -182,6 +187,7 @@ describe("getWeeklyNote", () => {
 
   test("returns note on the same day even if the HH:MM:SS is different", () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "/",
       format: "gggg-[W]ww-HHmm",
       template: "template",
@@ -201,6 +207,7 @@ describe("getWeeklyNote", () => {
 
   test("returns null if there is no weekly note for a given date", () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "/",
       format: "gggg-ww",
       template: "template",
@@ -225,6 +232,7 @@ describe("createWeeklyNote", () => {
 
   test("uses folder path from weekly note settings", async () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "/weekly-notes",
       format: "gggg-MM-DD",
     });
@@ -240,6 +248,7 @@ describe("createWeeklyNote", () => {
 
   test("uses template contents when creating file", async () => {
     setWeeklyConfig({
+      enabled: true,
       folder: "/weekly-notes",
       format: "gggg-MM-DD",
       template: "template",
@@ -261,6 +270,7 @@ describe("createWeeklyNote", () => {
     (<any>moment.localeData())._week.dow = 0;
 
     setWeeklyConfig({
+      enabled: true,
       folder: "/weekly-notes",
       format: "gggg-[W]ww",
       template: "template",
@@ -289,6 +299,7 @@ describe("createWeeklyNote", () => {
     jest.spyOn(global.console, "error").mockImplementation();
 
     setWeeklyConfig({
+      enabled: true,
       folder: "/weekly-notes",
       format: "gggg-[W]ww",
     });

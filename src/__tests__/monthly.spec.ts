@@ -18,6 +18,7 @@ describe("getMonthlyNoteSettings", () => {
 
   test("returns all the monthly note settings", () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "foo",
       format: "YYYY-MM",
       template: "template",
@@ -32,6 +33,7 @@ describe("getMonthlyNoteSettings", () => {
 
   test("cleanses data", () => {
     setMonthlyConfig({
+      enabled: true,
       folder: " foo/bar ",
       format: "YYYY-MM",
       template: "   path/to/template  ",
@@ -99,6 +101,7 @@ describe("getAllMonthlyNotes", () => {
 
   test("throws error if monthly note folder can't be found", () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "missing-folder/",
       format: "YYYY-MM",
       template: "template",
@@ -111,6 +114,7 @@ describe("getAllMonthlyNotes", () => {
 
   test("returns a list of all monthly notes with no nested folders", () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "/",
       format: "YYYY-MM",
       template: "template",
@@ -130,6 +134,7 @@ describe("getAllMonthlyNotes", () => {
 
   test("returns a list of all monthly notes including files nested in folders", () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "/",
       format: "YYYY-MM",
       template: "template",
@@ -157,6 +162,7 @@ describe("getMonthlyNote", () => {
 
   test("returns note on the same day even if the HH:MM:SS is different", () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "/",
       format: "YYYY-MM-HHmm",
       template: "template",
@@ -176,6 +182,7 @@ describe("getMonthlyNote", () => {
 
   test("returns null if there is no monthly note for a given date", () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "/",
       format: "YYYY-ww",
     });
@@ -199,6 +206,7 @@ describe("createMonthlyNote", () => {
 
   test("uses folder path from monthly note settings", async () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "/monthly-notes",
       format: "YYYY-MM",
     });
@@ -214,6 +222,7 @@ describe("createMonthlyNote", () => {
 
   test("uses template contents when creating file", async () => {
     setMonthlyConfig({
+      enabled: true,
       folder: "/monthly-notes",
       format: "YYYY-MM",
       template: "template",
@@ -238,6 +247,7 @@ describe("createMonthlyNote", () => {
     jest.spyOn(global.console, "error").mockImplementation();
 
     setMonthlyConfig({
+      enabled: true,
       folder: "/monthly-notes",
       format: "YYYY-MM",
       template: "template",

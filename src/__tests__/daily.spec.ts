@@ -3,7 +3,7 @@ import * as moment from "moment-timezone";
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
 import * as dailyNotesInterface from "../index";
-import { setDailyConfig } from "../testUtils/utils";
+import { setDailyConfig, setPeriodicNotesConfig } from "../testUtils/utils";
 
 jest.mock("path");
 
@@ -48,6 +48,48 @@ describe("getDailyNoteSettings", () => {
       format: "YYYY-MM-DD",
       folder: "",
       template: "",
+    });
+  });
+
+  test("uses settings from core daily notes if periodic-notes' `daily` is disabled", () => {
+    setDailyConfig({
+      folder: " foo ",
+      format: "YYYY/MM/MMM/YYYY-MM-DD",
+      template: "   path/to/daily  ",
+    });
+
+    setPeriodicNotesConfig("daily", {
+      enabled: false,
+      folder: " foo/bar ",
+      format: "MMM YYYY-MM-DD",
+      template: "   path/to/template  ",
+    });
+
+    expect(dailyNotesInterface.getDailyNoteSettings()).toEqual({
+      folder: "foo",
+      format: "YYYY/MM/MMM/YYYY-MM-DD",
+      template: "path/to/daily",
+    });
+  });
+
+  test("uses settings from Periodic Notes if periodic-notes and daily notes are both enabled", () => {
+    setDailyConfig({
+      folder: " foo/bar ",
+      format: "YYYY/MM/MMM/YYYY-MM-DD",
+      template: "   path/to/template  ",
+    });
+
+    setPeriodicNotesConfig("daily", {
+      enabled: true,
+      folder: " foo/bar ",
+      format: "MMM YYYY-MM-DD",
+      template: "   path/to/template  ",
+    });
+
+    expect(dailyNotesInterface.getDailyNoteSettings()).toEqual({
+      format: "MMM YYYY-MM-DD",
+      folder: "foo/bar",
+      template: "path/to/template",
     });
   });
 });

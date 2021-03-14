@@ -56,6 +56,7 @@ describe("getDateFromFile", () => {
 
   test("it supports 'month' granularity", () => {
     setMonthlyConfig({
+      enabled: true,
       format: "YYYY-MM",
     });
 
@@ -78,7 +79,7 @@ describe("getDateFromFile", () => {
 
   describe("weekly granularity", () => {
     test("it supports formats with year and month", () => {
-      setWeeklyConfig({ format: "gggg-MM" });
+      setWeeklyConfig({ enabled: true, format: "gggg-MM" });
       const file = createFile("2021-07", "");
 
       expect(
@@ -87,7 +88,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports formats with year, month, and day", () => {
-      setWeeklyConfig({ format: "gggg-MM-DD" });
+      setWeeklyConfig({ enabled: true, format: "gggg-MM-DD" });
       const file = createFile("2021-07-11", "");
 
       expect(
@@ -96,7 +97,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports formats with partial year, month, and week number", () => {
-      setWeeklyConfig({ format: "21MM[W]ww" });
+      setWeeklyConfig({ enabled: true, format: "21MM[W]ww" });
       const file = createFile("2107W07", "");
 
       expect(
@@ -105,7 +106,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports formats with year and week number", () => {
-      setWeeklyConfig({ format: "gggg-[W]ww" });
+      setWeeklyConfig({ enabled: true, format: "gggg-[W]ww" });
       const file = createFile("2021-W07", "");
 
       expect(
@@ -114,7 +115,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports formats with year, week number, and month", () => {
-      setWeeklyConfig({ format: "gggg-[W]ww-MMM" });
+      setWeeklyConfig({ enabled: true, format: "gggg-[W]ww-MMM" });
       const file = createFile("2021-W07-Feb", "");
 
       expect(
@@ -123,7 +124,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports formats with year, week number, and day", () => {
-      setWeeklyConfig({ format: "gggg-[W]ww-DD" });
+      setWeeklyConfig({ enabled: true, format: "gggg-[W]ww-DD" });
       const file = createFile("2021-W07-07", "");
 
       expect(
@@ -132,7 +133,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports formats with year, month number, week number", () => {
-      setWeeklyConfig({ format: "gggg-MM-[W]ww" });
+      setWeeklyConfig({ enabled: true, format: "gggg-MM-[W]ww" });
       const file = createFile("2021-02-W07", "");
 
       expect(
@@ -141,7 +142,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports formats with year, month number, week number without prefix", () => {
-      setWeeklyConfig({ format: "gggg-MM-ww" });
+      setWeeklyConfig({ enabled: true, format: "gggg-MM-ww" });
       const file = createFile("2021-02-07", "");
 
       expect(
@@ -150,7 +151,7 @@ describe("getDateFromFile", () => {
     });
 
     test("it supports year, month, day, week number", () => {
-      setWeeklyConfig({ format: "gggg-MM-DD_[W]ww" });
+      setWeeklyConfig({ enabled: true, format: "gggg-MM-DD_[W]ww" });
       const file = createFile("2021-02-07_W07", "");
 
       expect(
@@ -159,7 +160,7 @@ describe("getDateFromFile", () => {
     });
 
     test("ambiguous dates are still parsed strictly first", () => {
-      setWeeklyConfig({ format: "gggg-MM-[W]ww" });
+      setWeeklyConfig({ enabled: true, format: "gggg-MM-[W]ww" });
 
       const fileWithSuffix = createFile("2021-02-W07 Foo", "");
       const fileWithSpaces = createFile("2021 02 W07", "");
