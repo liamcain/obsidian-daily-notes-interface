@@ -5,6 +5,14 @@ import {
 } from "./constants";
 import { IPeriodicNoteSettings } from "./types";
 
+export function shouldUsePeriodicNotesSettings(
+  periodicity: "daily" | "weekly" | "monthly"
+): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const periodicNotes = (<any>window.app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.[periodicity]?.enabled;
+}
+
 /**
  * Read the user settings for the `daily-notes` plugin
  * to keep behavior of creating a new note in-sync.
@@ -14,16 +22,22 @@ export function getDailyNoteSettings(): IPeriodicNoteSettings {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { internalPlugins, plugins } = <any>window.app;
 
-    const dailyNoteSettings = internalPlugins.getPluginById("daily-notes")
-      ?.instance?.options;
-    const periodicNotesSettings = plugins.getPlugin("periodic-notes")?.settings
-      ?.daily;
+    if (shouldUsePeriodicNotesSettings("daily")) {
+      const { format, folder, template } =
+        plugins.getPlugin("periodic-notes")?.settings?.daily || {};
+      return {
+        format: format || DEFAULT_DAILY_NOTE_FORMAT,
+        folder: folder?.trim() || "",
+        template: template?.trim() || "",
+      };
+    }
 
-    const settings = periodicNotesSettings || dailyNoteSettings || {};
+    const { folder, format, template } =
+      internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
     return {
-      format: settings.format || DEFAULT_DAILY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
+      format: format || DEFAULT_DAILY_NOTE_FORMAT,
+      folder: folder?.trim() || "",
+      template: template?.trim() || "",
     };
   } catch (err) {
     console.info("No custom daily note settings found!", err);
@@ -43,7 +57,7 @@ export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
     const periodicNotesSettings = pluginManager.getPlugin("periodic-notes")
       ?.settings?.weekly;
 
-    if (periodicNotesSettings) {
+    if (shouldUsePeriodicNotesSettings("weekly")) {
       return {
         format: periodicNotesSettings.format || DEFAULT_WEEKLY_NOTE_FORMAT,
         folder: periodicNotesSettings.folder?.trim() || "",
@@ -67,11 +81,14 @@ export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
  * to keep behavior of creating a new note in-sync.
  */
 export function getMonthlyNoteSettings(): IPeriodicNoteSettings {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pluginManager = (<any>window.app).plugins;
+
   try {
     const settings =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (<any>window.app).plugins.getPlugin("periodic-notes")?.settings
-        ?.monthly || {};
+      (shouldUsePeriodicNotesSettings("monthly") &&
+        pluginManager.getPlugin("periodic-notes")?.settings?.monthly) ||
+      {};
 
     return {
       format: settings.format || DEFAULT_MONTHLY_NOTE_FORMAT,
