@@ -33,7 +33,10 @@ function removeEscapedCharacters(format: string): string {
 function isFormatAmbiguous(format: string, granularity: IGranularity) {
   if (granularity === "week") {
     const cleanFormat = removeEscapedCharacters(format);
-    return /w/i.test(cleanFormat) && /M{1,4}/.test(cleanFormat);
+    return (
+      /w{1,2}/i.test(cleanFormat) &&
+      (/M{1,4}/.test(cleanFormat) || /D{1,4}/.test(cleanFormat))
+    );
   }
   return false;
 }
@@ -58,11 +61,11 @@ export function getDateFromFile(
   if (isFormatAmbiguous(format, granularity)) {
     if (granularity === "week") {
       const cleanFormat = removeEscapedCharacters(format);
-      if (/w/i.test(cleanFormat)) {
+      if (/w{1,2}/i.test(cleanFormat)) {
         return window.moment(
           file.basename,
-          // If format contains week, remove month formatting
-          format.replace(/M{1,4}/g, ""),
+          // If format contains week, remove day & month formatting
+          format.replace(/M{1,4}/g, "").replace(/D{1,4}/g, ""),
           false
         );
       }
