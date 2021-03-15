@@ -150,7 +150,7 @@ describe("getDateFromFile", () => {
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
-    test.only("it supports year, month, day, week number", () => {
+    test("it supports year, month, day, week number", () => {
       setWeeklyConfig({ enabled: true, format: "gggg-MM-DD_[W]ww" });
       const file = createFile("2021-04-11_W16", "");
 
