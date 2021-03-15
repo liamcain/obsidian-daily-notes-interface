@@ -150,13 +150,13 @@ describe("getDateFromFile", () => {
       ).toEqual("2021-02-07T00:00:00-05:00");
     });
 
-    test("it supports year, month, day, week number", () => {
+    test.only("it supports year, month, day, week number", () => {
       setWeeklyConfig({ enabled: true, format: "gggg-MM-DD_[W]ww" });
-      const file = createFile("2021-02-07_W07", "");
+      const file = createFile("2021-04-11_W16", "");
 
       expect(
         dailyNotesInterface.getDateFromFile(file, "week").format()
-      ).toEqual("2021-02-07T00:00:00-05:00");
+      ).toEqual("2021-04-11T00:00:00-04:00");
     });
 
     test("ambiguous dates are still parsed strictly first", () => {
