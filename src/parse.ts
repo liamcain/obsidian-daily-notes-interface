@@ -25,10 +25,6 @@ function removeEscapedCharacters(format: string): string {
   return format.replace(/\[[^\]]*\]/g, ""); // remove everything within brackets
 }
 
-function xor(a: boolean, b: boolean): boolean {
-  return (a || b) && !(a && b);
-}
-
 /**
  * XXX: When parsing dates that contain both week numbers and months,
  * Moment choses to ignore the week numbers. For the week dateUID, we
@@ -39,7 +35,7 @@ function isFormatAmbiguous(format: string, granularity: IGranularity) {
     const cleanFormat = removeEscapedCharacters(format);
     return (
       /w{1,2}/i.test(cleanFormat) &&
-      xor(/M{1,4}/.test(cleanFormat), /D{1,4}/.test(cleanFormat))
+      (/M{1,4}/.test(cleanFormat) || /D{1,4}/.test(cleanFormat))
     );
   }
   return false;
