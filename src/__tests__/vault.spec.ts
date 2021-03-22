@@ -1,8 +1,19 @@
 import * as moment from "moment";
 
 import * as dailyNotesInterface from "../index";
+import { join } from "../vault";
 
 import getMockApp, { createFile } from "src/testUtils/mockApp";
+
+describe("join function", () => {
+  test("join() mimics path.join", () => {
+    expect(join("test", "/foo", "/bar/", "baz.md")).toEqual(
+      "test/foo/bar/baz.md"
+    );
+    expect(join("/test", "baz.md")).toEqual("/test/baz.md");
+    expect(join("/test.md")).toEqual("/test.md");
+  });
+});
 
 describe("getTemplateContents", () => {
   beforeEach(() => {

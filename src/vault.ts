@@ -1,7 +1,7 @@
 import { normalizePath, App, Notice } from "obsidian";
 
 // Credit: @creationix/path.js
-function join(...partSegments: string[]) {
+export function join(...partSegments: string[]): string {
   // Split the inputs into a list of path commands.
   let parts = [];
   for (let i = 0, l = partSegments.length; i < l; i++) {
