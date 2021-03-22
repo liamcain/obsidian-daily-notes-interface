@@ -14,28 +14,22 @@ function join(...partSegments: string[]) {
     // Remove leading and trailing slashes
     // Also remove "." segments
     if (!part || part === ".") continue;
-    // Interpret ".." to pop the last segment
-    if (part === "..") newParts.pop();
     // Push new path segments.
     else newParts.push(part);
   }
   // Preserve the initial slash if there was one.
   if (parts[0] === "") newParts.unshift("");
   // Turn back into a single string path.
-  return newParts.join("/") || (newParts.length ? "/" : ".");
+  return newParts.join("/");
 }
 
 async function ensureFolderExists(path: string): Promise<void> {
-  const dirs = path.split("/");
-
+  const dirs = path.replace(/\\/g, "/").split("/");
   dirs.pop(); // remove basename
 
-  let dir = "";
-  while (dirs.length) {
-    dir = join(dir, dirs.shift()).replace(/\\/g, "/");
-    if (!window.app.vault.getAbstractFileByPath(dir)) {
-      await window.app.vault.createFolder(dir);
-    }
+  const dir = join(...dirs);
+  if (!window.app.vault.getAbstractFileByPath(dir)) {
+    await window.app.vault.createFolder(dir);
   }
 }
 

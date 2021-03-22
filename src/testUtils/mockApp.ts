@@ -110,8 +110,6 @@ export default function getMockApp(): App {
         remove: () => Promise.resolve(),
         rename: () => Promise.resolve(),
         copy: () => Promise.resolve(),
-        setCtime: () => Promise.resolve(),
-        setMtime: () => Promise.resolve(),
       },
       getName: () => "",
       getAbstractFileByPath: (path: string) =>
@@ -164,6 +162,8 @@ export default function getMockApp(): App {
       tryTrigger: () => null,
       fileToLinktext: () => "",
       trigger: () => null,
+      resolvedLinks: null,
+      unresolvedLinks: null,
     },
     // @ts-ignore
     plugins,
