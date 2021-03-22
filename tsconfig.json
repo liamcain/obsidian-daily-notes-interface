@@ -5,9 +5,9 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
-    "target": "es5",
+    "target": "esnext",
     "moduleResolution": "node",
-    "lib": ["dom", "es5", "scripthost", "es2015"],
+    "lib": ["dom", "es2020"],
     "types": ["node", "jest"]
   },
   "include": ["**/*.ts"]

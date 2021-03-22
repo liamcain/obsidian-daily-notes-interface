@@ -11,7 +11,7 @@ export default {
     file: "dist/main.js",
     name: pkg.name,
   },
-  external: ["obsidian", "fs", "os", "path"],
+  external: ["obsidian"],
   plugins: [
     typescript(),
     resolve({
