@@ -177,7 +177,7 @@ describe.only("createDailyNote", () => {
   beforeEach(() => {
     window.app = getMockApp();
     window.existingFiles = {};
-    window.moment = moment.bind(null, "2021-02-16T05:20:30+05:00");
+    window.moment = moment.bind(null, "2021-02-15T14:06:00-05:00");
     moment.tz.setDefault("America/New_York");
   });
 
@@ -208,7 +208,7 @@ describe.only("createDailyNote", () => {
       "/2021-02-15.md",
       `
 2021-02-15
-19:20
+14:06
 2021-02-15
 2021-02-14
 2021-02-16

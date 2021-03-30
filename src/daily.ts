@@ -53,9 +53,12 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
         )
         .replace(
           /{{\s*yesterday\s*}}/gi,
-          moment().subtract(1, "day").format(format)
+          date.clone().subtract(1, "day").format(format)
         )
-        .replace(/{{\s*tomorrow\s*}}/gi, moment().add(1, "day").format(format))
+        .replace(
+          /{{\s*tomorrow\s*}}/gi,
+          date.clone().add(1, "d").format(format)
+        )
     );
     return createdFile;
   } catch (err) {
