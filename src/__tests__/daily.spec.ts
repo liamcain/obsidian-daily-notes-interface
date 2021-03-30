@@ -189,9 +189,11 @@ describe.only("createDailyNote", () => {
 {{title}}
 {{yesterday}}
 {{tomorrow}}
+{{date-1d:YYYY-MM-DD}}
 {{date+2d:YYYY-MM-DD}}
 {{date+1M:YYYY-MM-DD}}
 {{date+10y:YYYY-MM-DD}}
+{{date +7d}}
 `);
 
     setDailyConfig({
@@ -210,9 +212,11 @@ describe.only("createDailyNote", () => {
 2021-02-15
 2021-02-14
 2021-02-16
+2021-02-14
 2021-02-17
 2021-03-15
 2031-02-15
+2021-02-22
 `
     );
   });

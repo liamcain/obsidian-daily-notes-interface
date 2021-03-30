@@ -29,8 +29,11 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
     const createdFile = await vault.create(
       normalizedPath,
       templateContents
+        .replace(/{{\s*date\s*}}/gi, filename)
+        .replace(/{{\s*time\s*}}/gi, moment().format("HH:mm"))
+        .replace(/{{\s*title\s*}}/gi, filename)
         .replace(
-          /{{\s*(date|time)(([+-]\d+)([dmyhs]))?\s*:(.*?)}}/gi,
+          /{{\s*(date|time)\s*(([+-]\d+)([dmyhs]))?\s*(:.*)?}}/gi,
           (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
             const now = moment();
             const currentDate = date.clone().set({
@@ -41,12 +44,13 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
             if (calc) {
               currentDate.add(parseInt(timeDelta, 10), unit);
             }
-            return currentDate.format(momentFormat.trim());
+
+            if (momentFormat) {
+              return currentDate.format(momentFormat.substring(1).trim());
+            }
+            return currentDate.format(format);
           }
         )
-        .replace(/{{\s*date\s*}}/gi, filename)
-        .replace(/{{\s*time\s*}}/gi, moment().format("HH:mm"))
-        .replace(/{{\s*title\s*}}/gi, filename)
         .replace(
           /{{\s*yesterday\s*}}/gi,
           moment().subtract(1, "day").format(format)
