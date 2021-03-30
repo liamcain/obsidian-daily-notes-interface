@@ -3,9 +3,8 @@ import * as moment from "moment-timezone";
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
 import * as dailyNotesInterface from "../index";
+import * as vaultUtils from "../vault";
 import { setDailyConfig, setPeriodicNotesConfig } from "../testUtils/utils";
-
-jest.mock("path");
 
 describe("getDailyNoteSettings", () => {
   beforeEach(() => {
@@ -171,5 +170,54 @@ describe("getAllDailyNotes", () => {
       "day-2020-12-02T00:00:00-05:00": fileB,
       "day-2020-12-03T00:00:00-05:00": fileC,
     });
+  });
+});
+
+describe.only("createDailyNote", () => {
+  beforeEach(() => {
+    window.app = getMockApp();
+    window.existingFiles = {};
+    window.moment = moment.bind(null, "2021-02-16T05:20:30+05:00");
+    moment.tz.setDefault("America/New_York");
+  });
+
+  test("replaces all mustaches in template", async () => {
+    const getTemplateContents = jest.spyOn(vaultUtils, "getTemplateContents");
+    getTemplateContents.mockResolvedValue(`
+{{date}}
+{{time}}
+{{title}}
+{{yesterday}}
+{{tomorrow}}
+{{date-1d:YYYY-MM-DD}}
+{{date+2d:YYYY-MM-DD}}
+{{date+1M:YYYY-MM-DD}}
+{{date+10y:YYYY-MM-DD}}
+{{date +7d}}
+`);
+
+    setDailyConfig({
+      folder: "/",
+      format: "YYYY-MM-DD",
+      template: "template",
+    });
+
+    await dailyNotesInterface.createDailyNote(window.moment());
+
+    expect(window.app.vault.create).toHaveBeenCalledWith(
+      "/2021-02-15.md",
+      `
+2021-02-15
+19:20
+2021-02-15
+2021-02-14
+2021-02-16
+2021-02-14
+2021-02-17
+2021-03-15
+2031-02-15
+2021-02-22
+`
+    );
   });
 });
