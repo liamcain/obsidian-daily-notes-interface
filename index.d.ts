@@ -17,14 +17,12 @@ export const DEFAULT_WEEKLY_NOTE_FORMAT = "gggg-[W]ww";
 export const DEFAULT_MONTHLY_NOTE_FORMAT = "YYYY-MM";
 
 // Utils
+export type IGranularity = "day" | "week" | "month";
 export function getDateFromFile(
   file: TFile,
-  granularity: "day" | "week" | "month"
+  granularity: IGranularity
 ): Moment | null;
-export function getDateUID(
-  date: Moment,
-  granularity: "day" | "week" | "month"
-): string;
+export function getDateUID(date: Moment, granularity: IGranularity): string;
 export function getTemplateContents(template: string): Promise<string>;
 
 // Daily

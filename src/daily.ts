@@ -30,21 +30,28 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
       normalizedPath,
       templateContents
         .replace(
-          /{{\s*(date|time)\s*:(.*?)}}/gi,
-          (_, _timeOrDate, momentFormat) => {
+          /{{\s*(date|time)(([+-]\d+)([dmyhs]))?\s*:(.*?)}}/gi,
+          (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
             const now = moment();
-            return date
-              .set({
-                hour: now.get("hour"),
-                minute: now.get("minute"),
-                second: now.get("second"),
-              })
-              .format(momentFormat.trim());
+            const currentDate = date.clone().set({
+              hour: now.get("hour"),
+              minute: now.get("minute"),
+              second: now.get("second"),
+            });
+            if (calc) {
+              currentDate.add(parseInt(timeDelta, 10), unit);
+            }
+            return currentDate.format(momentFormat.trim());
           }
         )
         .replace(/{{\s*date\s*}}/gi, filename)
         .replace(/{{\s*time\s*}}/gi, moment().format("HH:mm"))
         .replace(/{{\s*title\s*}}/gi, filename)
+        .replace(
+          /{{\s*yesterday\s*}}/gi,
+          moment().subtract(1, "day").format(format)
+        )
+        .replace(/{{\s*tomorrow\s*}}/gi, moment().add(1, "day").format(format))
     );
     return createdFile;
   } catch (err) {
