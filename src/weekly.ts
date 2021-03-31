@@ -44,16 +44,22 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
       normalizedPath,
       templateContents
         .replace(
-          /{{\s*(date|time)\s*:(.*?)}}/gi,
-          (_, _timeOrDate, momentFormat) => {
-            const now = window.moment();
-            return date
-              .set({
-                hour: now.get("hour"),
-                minute: now.get("minute"),
-                second: now.get("second"),
-              })
-              .format(momentFormat.trim());
+          /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+          (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+            const now = moment();
+            const currentDate = date.clone().set({
+              hour: now.get("hour"),
+              minute: now.get("minute"),
+              second: now.get("second"),
+            });
+            if (calc) {
+              currentDate.add(parseInt(timeDelta, 10), unit);
+            }
+
+            if (momentFormat) {
+              return currentDate.format(momentFormat.substring(1).trim());
+            }
+            return currentDate.format(format);
           }
         )
         .replace(/{{\s*title\s*}}/gi, filename)

@@ -33,7 +33,7 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
         .replace(/{{\s*time\s*}}/gi, moment().format("HH:mm"))
         .replace(/{{\s*title\s*}}/gi, filename)
         .replace(
-          /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.*)?}}/gi,
+          /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
           (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
             const now = moment();
             const currentDate = date.clone().set({

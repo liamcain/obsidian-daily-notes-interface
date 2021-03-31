@@ -173,10 +173,9 @@ describe("getAllDailyNotes", () => {
   });
 });
 
-describe.only("createDailyNote", () => {
+describe("createDailyNote", () => {
   beforeEach(() => {
     window.app = getMockApp();
-    window.existingFiles = {};
     window.moment = moment.bind(null, "2021-02-15T14:06:00-05:00");
     moment.tz.setDefault("America/New_York");
   });
@@ -189,6 +188,7 @@ describe.only("createDailyNote", () => {
 {{title}}
 {{yesterday}}
 {{tomorrow}}
+{{date:YYYY}}-{{date:MM-DD}}
 {{date-1d:YYYY-MM-DD}}
 {{date+2d:YYYY-MM-DD}}
 {{date+1M:YYYY-MM-DD}}
@@ -212,6 +212,7 @@ describe.only("createDailyNote", () => {
 2021-02-15
 2021-02-14
 2021-02-16
+2021-02-15
 2021-02-14
 2021-02-17
 2021-03-15
