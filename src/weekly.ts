@@ -46,7 +46,7 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
         .replace(
           /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
           (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
-            const now = moment();
+            const now = window.moment();
             const currentDate = date.clone().set({
               hour: now.get("hour"),
               minute: now.get("minute"),
