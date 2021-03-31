@@ -2,8 +2,9 @@ import * as moment from "moment-timezone";
 
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
-import { getDayOfWeekNumericalValue } from "../weekly";
 import * as dailyNotesInterface from "../index";
+import { getDayOfWeekNumericalValue } from "../weekly";
+import * as vaultUtils from "../vault";
 import { setWeeklyConfig } from "../testUtils/utils";
 
 jest.mock("path");
@@ -310,6 +311,53 @@ describe("createWeeklyNote", () => {
     expect(console.error).toHaveBeenCalledWith(
       "Failed to create file: '/weekly-notes/2020-W45.md'",
       "error"
+    );
+  });
+});
+
+describe("createWeeklyNote", () => {
+  beforeEach(() => {
+    window.app = getMockApp();
+    window.moment = moment.bind(null, "2021-02-15T14:06:00-05:00");
+    moment.tz.setDefault("America/New_York");
+  });
+
+  test("replaces all mustaches in template", async () => {
+    const getTemplateContents = jest.spyOn(vaultUtils, "getTemplateContents");
+    getTemplateContents.mockResolvedValue(`
+{{date}}
+{{time}}
+{{title}}
+{{date:gggg}} {{date:[W]ww}}
+{{date-1w:gggg-[W]ww-DD}}
+{{date+2d:gggg-[W]ww-DD}}
+{{date+1M:gggg-[W]ww-DD}}
+{{date+10y:gggg-[W]ww-DD}}
+{{date +7d}}
+`);
+
+    setWeeklyConfig({
+      enabled: true,
+      folder: "/",
+      format: "gggg-[W]ww",
+      template: "template",
+    });
+
+    await dailyNotesInterface.createDailyNote(window.moment());
+
+    expect(window.app.vault.create).toHaveBeenCalledWith(
+      "/2021-02-15.md",
+      `
+2021-02-15
+14:06
+2021-02-15
+2021 W08
+2021-W07-08
+2021-W08-17
+2021-W12-15
+2031-W07-15
+2021-02-22
+`
     );
   });
 });
