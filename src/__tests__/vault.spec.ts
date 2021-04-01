@@ -15,7 +15,7 @@ describe("join function", () => {
   });
 });
 
-describe("getTemplateContents", () => {
+describe("getTemplateInfo", () => {
   beforeEach(() => {
     window.app = getMockApp();
     window.moment = moment;
@@ -27,12 +27,12 @@ describe("getTemplateContents", () => {
   });
 
   test("returns '' if path is empty", async () => {
-    const templateContents = await dailyNotesInterface.getTemplateContents("");
+    const [templateContents] = await dailyNotesInterface.getTemplateInfo("");
     expect(templateContents).toEqual("");
   });
 
   test("returns contents of the template file", async () => {
-    const templateContents = await dailyNotesInterface.getTemplateContents(
+    const [templateContents] = await dailyNotesInterface.getTemplateInfo(
       "fileA"
     );
     expect(templateContents).toEqual("A. Lorem ipsum dolor sit amet");
@@ -41,7 +41,7 @@ describe("getTemplateContents", () => {
   test("throws error if file can't be found", async () => {
     jest.spyOn(global.console, "error").mockImplementation();
 
-    const templateContents = await dailyNotesInterface.getTemplateContents(
+    const [templateContents] = await dailyNotesInterface.getTemplateInfo(
       "nonexistent-file"
     );
 

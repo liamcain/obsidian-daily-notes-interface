@@ -3,7 +3,7 @@ import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
 import { getDateFromFile, getDateUID } from "./parse";
 import { getWeeklyNoteSettings } from "./settings";
-import { getNotePath, getTemplateContents } from "./vault";
+import { getNotePath, getTemplateInfo } from "./vault";
 
 export class WeeklyNotesFolderMissingError extends Error {}
 
@@ -35,7 +35,7 @@ export function getDayOfWeekNumericalValue(dayOfWeekName: string): number {
 export async function createWeeklyNote(date: Moment): Promise<TFile> {
   const { vault } = window.app;
   const { template, format, folder } = getWeeklyNoteSettings();
-  const templateContents = await getTemplateContents(template);
+  const [templateContents, IFoldInfo] = await getTemplateInfo(template);
   const filename = date.format(format);
   const normalizedPath = await getNotePath(folder, filename);
 
@@ -72,6 +72,10 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
           }
         )
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window.app as any).foldManager.save(createdFile, IFoldInfo);
+
     return createdFile;
   } catch (err) {
     console.error(`Failed to create file: '${normalizedPath}'`, err);

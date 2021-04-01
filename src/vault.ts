@@ -1,4 +1,13 @@
-import { normalizePath, App, Notice } from "obsidian";
+import { normalizePath, Notice } from "obsidian";
+
+interface IFold {
+  from: number;
+  to: number;
+}
+
+interface IFoldInfo {
+  folds: IFold[];
+}
 
 // Credit: @creationix/path.js
 export function join(...partSegments: string[]): string {
@@ -49,25 +58,29 @@ export async function getNotePath(
   return path;
 }
 
-export async function getTemplateContents(template: string): Promise<string> {
-  const app = window.app as App;
-  const { metadataCache, vault } = app;
+export async function getTemplateInfo(
+  template: string
+): Promise<[string, IFoldInfo]> {
+  const { metadataCache, vault } = window.app;
 
   const templatePath = normalizePath(template);
   if (templatePath === "/") {
-    return Promise.resolve("");
+    return Promise.resolve(["", null]);
   }
 
   try {
     const templateFile = metadataCache.getFirstLinkpathDest(templatePath, "");
     const contents = await vault.cachedRead(templateFile);
-    return contents;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const IFoldInfo = (window.app as any).foldManager.load(templateFile);
+    return [contents, IFoldInfo];
   } catch (err) {
     console.error(
       `Failed to read the daily note template '${templatePath}'`,
       err
     );
     new Notice("Failed to read the daily note template");
-    return "";
+    return ["", null];
   }
 }

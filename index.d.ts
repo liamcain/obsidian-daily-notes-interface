@@ -16,14 +16,24 @@ export const DEFAULT_DAILY_NOTE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_WEEKLY_NOTE_FORMAT = "gggg-[W]ww";
 export const DEFAULT_MONTHLY_NOTE_FORMAT = "YYYY-MM";
 
-// Utils
 export type IGranularity = "day" | "week" | "month";
+
+interface IFold {
+  from: number;
+  to: number;
+}
+
+interface IFoldInfo {
+  folds: IFold[];
+}
+
+// Utils
 export function getDateFromFile(
   file: TFile,
   granularity: IGranularity
 ): Moment | null;
 export function getDateUID(date: Moment, granularity: IGranularity): string;
-export function getTemplateContents(template: string): Promise<string>;
+export function getTemplateInfo(template: string): Promise<[string, IFoldInfo]>;
 
 // Daily
 export function appHasDailyNotesPluginLoaded(): boolean;

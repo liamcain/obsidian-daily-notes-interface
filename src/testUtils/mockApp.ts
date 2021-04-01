@@ -13,7 +13,7 @@ export function createFile(basename: string, contents: string): TFile {
   file.basename = basename;
   file.path = `/${basename}.md`;
   // eslint-disable-next-line
-  (file as any).cachedData = contents;
+  (file as any).unsafeCachedData = contents;
 
   window.existingFiles[file.path] = file;
   return file;
@@ -93,6 +93,11 @@ export default function getMockApp(): App {
     getPluginById: (pluginId: string) => internalPluginList[pluginId],
   };
   return {
+    // @ts-ignore
+    foldManager: {
+      save: jest.fn(),
+      load: jest.fn(),
+    },
     vault: {
       adapter: {
         exists: () => Promise.resolve(false),
@@ -131,7 +136,7 @@ export default function getMockApp(): App {
           return Promise.reject("error");
         }
         // eslint-disable-next-line
-        return Promise.resolve((file as any).cachedData);
+        return Promise.resolve((file as any).unsafeCachedData);
       },
       readBinary: () => Promise.resolve(null),
       getResourcePath: () => null,
