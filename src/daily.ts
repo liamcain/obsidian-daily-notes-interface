@@ -3,7 +3,7 @@ import { App, normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
 import { getDateFromFile, getDateUID } from "./parse";
 import { getDailyNoteSettings } from "./settings";
-import { getTemplateContents, getNotePath } from "./vault";
+import { getTemplateInfo, getNotePath } from "./vault";
 
 export class DailyNotesFolderMissingError extends Error {}
 
@@ -21,7 +21,7 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
 
   const { template, format, folder } = getDailyNoteSettings();
 
-  const templateContents = await getTemplateContents(template);
+  const [templateContents, IFoldInfo] = await getTemplateInfo(template);
   const filename = date.format(format);
   const normalizedPath = await getNotePath(folder, filename);
 
@@ -60,6 +60,10 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
           date.clone().add(1, "d").format(format)
         )
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (app as any).foldManager.save(createdFile, IFoldInfo);
+
     return createdFile;
   } catch (err) {
     console.error(`Failed to create file: '${normalizedPath}'`, err);

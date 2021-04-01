@@ -181,8 +181,9 @@ describe("createDailyNote", () => {
   });
 
   test("replaces all mustaches in template", async () => {
-    const getTemplateContents = jest.spyOn(vaultUtils, "getTemplateContents");
-    getTemplateContents.mockResolvedValue(`
+    const getTemplateInfo = jest.spyOn(vaultUtils, "getTemplateInfo");
+    getTemplateInfo.mockResolvedValue([
+      `
 {{date}}
 {{time}}
 {{title}}
@@ -194,7 +195,9 @@ describe("createDailyNote", () => {
 {{date+1M:YYYY-MM-DD}}
 {{date+10y:YYYY-MM-DD}}
 {{date +7d}}
-`);
+`,
+      null,
+    ]);
 
     setDailyConfig({
       folder: "/",

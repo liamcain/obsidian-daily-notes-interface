@@ -3,7 +3,7 @@ import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
 import { getDateFromFile, getDateUID } from "./parse";
 import { getMonthlyNoteSettings } from "./settings";
-import { getNotePath, getTemplateContents } from "./vault";
+import { getNotePath, getTemplateInfo } from "./vault";
 
 export class MonthlyNotesFolderMissingError extends Error {}
 
@@ -17,7 +17,7 @@ export class MonthlyNotesFolderMissingError extends Error {}
 export async function createMonthlyNote(date: Moment): Promise<TFile> {
   const { vault } = window.app;
   const { template, format, folder } = getMonthlyNoteSettings();
-  const templateContents = await getTemplateContents(template);
+  const [templateContents, IFoldInfo] = await getTemplateInfo(template);
   const filename = date.format(format);
   const normalizedPath = await getNotePath(folder, filename);
 
@@ -42,6 +42,10 @@ export async function createMonthlyNote(date: Moment): Promise<TFile> {
         .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
         .replace(/{{\s*title\s*}}/gi, filename)
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window.app as any).foldManager.save(createdFile, IFoldInfo);
+
     return createdFile;
   } catch (err) {
     console.error(`Failed to create file: '${normalizedPath}'`, err);

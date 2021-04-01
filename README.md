@@ -49,7 +49,7 @@ Returns the Daily Note for a given `Moment`. For performance reasons, this requi
 
 Returns the settings stored in the Daily Notes plugin (`format`, `folder`, and `template`).
 
-### getTemplateContents
+### getTemplateInfo
 
 Generic utility for reading the contents of a file given it's relative path. This does not apply any transformations.
 

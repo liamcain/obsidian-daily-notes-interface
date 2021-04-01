@@ -66,4 +66,4 @@ export {
 } from "./monthly";
 
 export { getDateUID, getDateFromFile } from "./parse";
-export { getTemplateContents } from "./vault";
+export { getTemplateInfo } from "./vault";

@@ -323,8 +323,9 @@ describe("createWeeklyNote", () => {
   });
 
   test("replaces all mustaches in template", async () => {
-    const getTemplateContents = jest.spyOn(vaultUtils, "getTemplateContents");
-    getTemplateContents.mockResolvedValue(`
+    const getTemplateInfo = jest.spyOn(vaultUtils, "getTemplateInfo");
+    getTemplateInfo.mockResolvedValue([
+      `
 {{date}}
 {{time}}
 {{title}}
@@ -334,7 +335,9 @@ describe("createWeeklyNote", () => {
 {{date+1M:gggg-[W]ww-DD}}
 {{date+10y:gggg-[W]ww-DD}}
 {{date +7d}}
-`);
+`,
+      null,
+    ]);
 
     setWeeklyConfig({
       enabled: true,
