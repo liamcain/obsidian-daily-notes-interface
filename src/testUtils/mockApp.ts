@@ -99,6 +99,7 @@ export default function getMockApp(): App {
       load: jest.fn(),
     },
     vault: {
+      configDir: "",
       adapter: {
         exists: () => Promise.resolve(false),
         getName: () => "",
