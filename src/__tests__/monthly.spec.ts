@@ -4,6 +4,7 @@ import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
 import * as dailyNotesInterface from "../index";
 import { setMonthlyConfig } from "../testUtils/utils";
+import * as vaultUtils from "../vault";
 
 jest.mock("path");
 
@@ -277,8 +278,7 @@ describe("createMonthlyNote", () => {
 {{date}}
 {{time}}
 {{title}}
-{{date:YYYY}} {{date:[W]ww}}
-{{date-1w:YYYY-MM-DD}}
+{{date:YYYY}} {{date:MMMM}}
 {{date+2d:YYYY-MM-DD}}
 {{date+1M:YYYY-MM-DD}}
 {{date+10y:YYYY-MM-DD}}
@@ -302,12 +302,11 @@ describe("createMonthlyNote", () => {
 2021-02-15
 14:06
 2021-02-15
-2021 W08
-2021-W07-08
-2021-W08-17
-2021-W12-15
-2031-W07-15
-2021-02-22
+2021 February
+2021-02-17
+2021-03-15
+2031-02-15
+2021-03-15
 `
     );
   });
