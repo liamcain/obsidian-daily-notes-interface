@@ -262,3 +262,53 @@ describe("createMonthlyNote", () => {
     );
   });
 });
+
+describe("createMonthlyNote", () => {
+  beforeEach(() => {
+    window.app = getMockApp();
+    window.moment = moment.bind(null, "2021-02-15T14:06:00-05:00");
+    moment.tz.setDefault("America/New_York");
+  });
+
+  test("replaces all mustaches in template", async () => {
+    const getTemplateInfo = jest.spyOn(vaultUtils, "getTemplateInfo");
+    getTemplateInfo.mockResolvedValue([
+      `
+{{date}}
+{{time}}
+{{title}}
+{{date:YYYY}} {{date:[W]ww}}
+{{date-1w:YYYY-MM-DD}}
+{{date+2d:YYYY-MM-DD}}
+{{date+1M:YYYY-MM-DD}}
+{{date+10y:YYYY-MM-DD}}
+{{date +1M}}
+`,
+      null,
+    ]);
+
+    setMonthlyConfig({
+      enabled: true,
+      folder: "/",
+      format: "YYYY-[M]MM",
+      template: "template",
+    });
+
+    await dailyNotesInterface.createDailyNote(window.moment());
+
+    expect(window.app.vault.create).toHaveBeenCalledWith(
+      "/2021-02-15.md",
+      `
+2021-02-15
+14:06
+2021-02-15
+2021 W08
+2021-W07-08
+2021-W08-17
+2021-W12-15
+2031-W07-15
+2021-02-22
+`
+    );
+  });
+});
