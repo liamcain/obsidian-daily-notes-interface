@@ -32,6 +32,10 @@ export function getDateFromFile(
   file: TFile,
   granularity: IGranularity
 ): Moment | null;
+export function getDateFromPath(
+  path: string,
+  granularity: IGranularity
+): Moment | null;
 export function getDateUID(date: Moment, granularity: IGranularity): string;
 export function getTemplateInfo(template: string): Promise<[string, IFoldInfo]>;
 
@@ -64,3 +68,12 @@ export function getMonthlyNote(
 ): TFile;
 export function getAllMonthlyNotes(): Record<string, TFile>;
 export function getMonthlyNoteSettings(): IPeriodicNoteSettings;
+
+// Generic
+export function getPeriodicNoteSettings(
+  granularity: IGranularity
+): IPeriodicNoteSettings;
+export function createPeriodicNote(
+  granularity: IGranularity,
+  date: Moment
+): Promise<TFile>;
