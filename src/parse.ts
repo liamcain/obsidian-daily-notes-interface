@@ -8,6 +8,7 @@ import {
 } from "./settings";
 
 import { IGranularity } from "./types";
+import { basename } from "./vault";
 
 /**
  * dateUID is a way of weekly identifying daily/weekly/monthly notes.
@@ -45,6 +46,20 @@ export function getDateFromFile(
   file: TFile,
   granularity: IGranularity
 ): Moment | null {
+  return getDateFromFilename(file.basename, granularity);
+}
+
+export function getDateFromPath(
+  path: string,
+  granularity: IGranularity
+): Moment | null {
+  return getDateFromFilename(basename(path), granularity);
+}
+
+function getDateFromFilename(
+  filename: string,
+  granularity: IGranularity
+): Moment | null {
   const getSettings = {
     day: getDailyNoteSettings,
     week: getWeeklyNoteSettings,
@@ -52,7 +67,7 @@ export function getDateFromFile(
   };
 
   const format = getSettings[granularity]().format.split("/").pop();
-  const noteDate = window.moment(file.basename, format, true);
+  const noteDate = window.moment(filename, format, true);
 
   if (!noteDate.isValid()) {
     return null;
@@ -63,7 +78,7 @@ export function getDateFromFile(
       const cleanFormat = removeEscapedCharacters(format);
       if (/w{1,2}/i.test(cleanFormat)) {
         return window.moment(
-          file.basename,
+          filename,
           // If format contains week, remove day & month formatting
           format.replace(/M{1,4}/g, "").replace(/D{1,4}/g, ""),
           false

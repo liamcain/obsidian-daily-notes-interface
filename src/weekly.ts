@@ -1,6 +1,7 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
+import { appHasWeeklyNotesPluginLoaded } from "./index";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getWeeklyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
@@ -91,9 +92,14 @@ export function getWeeklyNote(
 }
 
 export function getAllWeeklyNotes(): Record<string, TFile> {
+  const weeklyNotes: Record<string, TFile> = {};
+
+  if (!appHasWeeklyNotesPluginLoaded()) {
+    return weeklyNotes;
+  }
+
   const { vault } = window.app;
   const { folder } = getWeeklyNoteSettings();
-
   const weeklyNotesFolder = vault.getAbstractFileByPath(
     normalizePath(folder)
   ) as TFolder;
@@ -104,7 +110,6 @@ export function getAllWeeklyNotes(): Record<string, TFile> {
     );
   }
 
-  const weeklyNotes: Record<string, TFile> = {};
   Vault.recurseChildren(weeklyNotesFolder, (note) => {
     if (note instanceof TFile) {
       const date = getDateFromFile(note, "week");

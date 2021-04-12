@@ -1,5 +1,6 @@
 import type moment from "moment";
-import { App } from "obsidian";
+import type { Moment } from "moment";
+import { App, TFile } from "obsidian";
 
 declare global {
   interface Window {
@@ -51,19 +52,61 @@ export {
   DEFAULT_MONTHLY_NOTE_FORMAT,
 } from "./constants";
 
-export type { IGranularity, IPeriodicNoteSettings } from "./types";
-export {
+import type { IGranularity, IPeriodicNoteSettings } from "./types";
+import {
   getDailyNoteSettings,
   getWeeklyNoteSettings,
   getMonthlyNoteSettings,
 } from "./settings";
-export { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
-export { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
-export {
+import { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
+import { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
+import {
   createMonthlyNote,
   getAllMonthlyNotes,
   getMonthlyNote,
 } from "./monthly";
 
-export { getDateUID, getDateFromFile } from "./parse";
+export { getDateUID, getDateFromFile, getDateFromPath } from "./parse";
 export { getTemplateInfo } from "./vault";
+
+function getPeriodicNoteSettings(
+  granularity: IGranularity
+): IPeriodicNoteSettings {
+  const getSettings = {
+    day: getDailyNoteSettings,
+    week: getWeeklyNoteSettings,
+    month: getMonthlyNoteSettings,
+  }[granularity];
+
+  return getSettings();
+}
+
+function createPeriodicNote(
+  granularity: IGranularity,
+  date: Moment
+): Promise<TFile> {
+  const createFn = {
+    day: createDailyNote,
+    month: createMonthlyNote,
+    week: createWeeklyNote,
+  };
+  return createFn[granularity](date);
+}
+
+export type { IGranularity, IPeriodicNoteSettings };
+export {
+  createDailyNote,
+  createMonthlyNote,
+  createWeeklyNote,
+  createPeriodicNote,
+  getAllDailyNotes,
+  getAllMonthlyNotes,
+  getAllWeeklyNotes,
+  getDailyNote,
+  getDailyNoteSettings,
+  getMonthlyNote,
+  getMonthlyNoteSettings,
+  getPeriodicNoteSettings,
+  getWeeklyNote,
+  getWeeklyNoteSettings,
+};
