@@ -1,6 +1,7 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
+import { appHasMonthlyNotesPluginLoaded } from "./index";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getMonthlyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
@@ -61,6 +62,11 @@ export function getMonthlyNote(
 }
 
 export function getAllMonthlyNotes(): Record<string, TFile> {
+  const monthlyNotes: Record<string, TFile> = {};
+
+  if (!appHasMonthlyNotesPluginLoaded()) {
+    return monthlyNotes;
+  }
   const { vault } = window.app;
   const { folder } = getMonthlyNoteSettings();
 
@@ -74,7 +80,6 @@ export function getAllMonthlyNotes(): Record<string, TFile> {
     );
   }
 
-  const monthlyNotes: Record<string, TFile> = {};
   Vault.recurseChildren(monthlyNotesFolder, (note) => {
     if (note instanceof TFile) {
       const date = getDateFromFile(note, "month");
