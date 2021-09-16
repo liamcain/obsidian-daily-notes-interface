@@ -296,23 +296,23 @@ describe("createQuarterlyNote", () => {
     setQuarterlyConfig({
       enabled: true,
       folder: "/",
-      format: "YYYY-[M]MM",
+      format: "YYYY-[Q]Q",
       template: "template",
     });
 
-    await dailyNotesInterface.createDailyNote(window.moment());
+    await dailyNotesInterface.createQuarterlyNote(window.moment());
 
     expect(window.app.vault.create).toHaveBeenCalledWith(
-      "/2021-02-15.md",
+      "/2021-Q1.md",
       `
-2021-02-15
-14:06
-2021-02-15
+2021-Q1
+2021-Q1
+2021-Q1
 2021 February
 2021-02-17
 2021-03-15
 2031-02-15
-2021-03-15
+2021-Q1
 `
     );
   });
