@@ -46,10 +46,26 @@ export function appHasMonthlyNotesPluginLoaded(): boolean {
   return periodicNotes && periodicNotes.settings?.monthly?.enabled;
 }
 
+export function appHasQuarterlyNotesPluginLoaded(): boolean {
+  const { app } = window;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.quarterly?.enabled;
+}
+
+export function appHasYearlyNotesPluginLoaded(): boolean {
+  const { app } = window;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
+  return periodicNotes && periodicNotes.settings?.yearly?.enabled;
+}
+
 export {
   DEFAULT_DAILY_NOTE_FORMAT,
   DEFAULT_WEEKLY_NOTE_FORMAT,
   DEFAULT_MONTHLY_NOTE_FORMAT,
+  DEFAULT_QUARTERLY_NOTE_FORMAT,
+  DEFAULT_YEARLY_NOTE_FORMAT,
 } from "./constants";
 
 import type { IGranularity, IPeriodicNoteSettings } from "./types";
@@ -57,6 +73,8 @@ import {
   getDailyNoteSettings,
   getWeeklyNoteSettings,
   getMonthlyNoteSettings,
+  getQuarterlyNoteSettings,
+  getYearlyNoteSettings,
 } from "./settings";
 import { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
 import { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
@@ -65,6 +83,12 @@ import {
   getAllMonthlyNotes,
   getMonthlyNote,
 } from "./monthly";
+import {
+  createQuarterlyNote,
+  getAllQuarterlyNotes,
+  getQuarterlyNote,
+} from "./quarterly";
+import { createYearlyNote, getAllYearlyNotes, getYearlyNote } from "./yearly";
 
 export { getDateUID, getDateFromFile, getDateFromPath } from "./parse";
 export { getTemplateInfo } from "./vault";
@@ -76,6 +100,8 @@ function getPeriodicNoteSettings(
     day: getDailyNoteSettings,
     week: getWeeklyNoteSettings,
     month: getMonthlyNoteSettings,
+    quarter: getQuarterlyNoteSettings,
+    year: getYearlyNoteSettings,
   }[granularity];
 
   return getSettings();
@@ -98,10 +124,14 @@ export {
   createDailyNote,
   createMonthlyNote,
   createWeeklyNote,
+  createQuarterlyNote,
+  createYearlyNote,
   createPeriodicNote,
   getAllDailyNotes,
   getAllMonthlyNotes,
   getAllWeeklyNotes,
+  getAllQuarterlyNotes,
+  getAllYearlyNotes,
   getDailyNote,
   getDailyNoteSettings,
   getMonthlyNote,
@@ -109,4 +139,8 @@ export {
   getPeriodicNoteSettings,
   getWeeklyNote,
   getWeeklyNoteSettings,
+  getQuarterlyNote,
+  getQuarterlyNoteSettings,
+  getYearlyNote,
+  getYearlyNoteSettings,
 };

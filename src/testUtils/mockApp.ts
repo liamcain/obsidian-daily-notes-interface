@@ -69,6 +69,18 @@ export default function getMockApp(): App {
           template: "",
           folder: "",
         },
+        quarterly: {
+          enabled: false,
+          format: "",
+          template: "",
+          folder: "",
+        },
+        yearly: {
+          enabled: false,
+          format: "",
+          template: "",
+          folder: "",
+        },
       },
       _loaded: true,
     },

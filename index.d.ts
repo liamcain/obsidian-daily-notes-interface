@@ -10,13 +10,18 @@ export interface IPeriodicNoteSettings {
 // Errors
 export class DailyNotesFolderMissingError extends Error {}
 export class WeeklyNotesFolderMissingError extends Error {}
+export class MonthlyNotesFolderMissingError extends Error {}
+export class QuarterlyNotesFolderMissingError extends Error {}
+export class YearlyNotesFolderMissingError extends Error {}
 
 // Constants
 export const DEFAULT_DAILY_NOTE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_WEEKLY_NOTE_FORMAT = "gggg-[W]ww";
 export const DEFAULT_MONTHLY_NOTE_FORMAT = "YYYY-MM";
+export const DEFAULT_QUARTERLY_NOTE_FORMAT = "YYYY-[Q]Q";
+export const DEFAULT_YEARLY_NOTE_FORMAT = "YYYY";
 
-export type IGranularity = "day" | "week" | "month";
+export type IGranularity = "day" | "week" | "month" | "quarter" | "year";
 
 interface IFold {
   from: number;
@@ -68,6 +73,26 @@ export function getMonthlyNote(
 ): TFile;
 export function getAllMonthlyNotes(): Record<string, TFile>;
 export function getMonthlyNoteSettings(): IPeriodicNoteSettings;
+
+// Quarterly
+export function appHasQuarterlyNotesPluginLoaded(): boolean;
+export function createQuarterlyNote(date: Moment): Promise<TFile>;
+export function getQuarterlyNote(
+  date: Moment,
+  quarterlyNotes: Record<string, TFile>
+): TFile;
+export function getAllQuarterlyNotes(): Record<string, TFile>;
+export function getQuarterlyNoteSettings(): IPeriodicNoteSettings;
+
+// Yearly
+export function appHasYearlyNotesPluginLoaded(): boolean;
+export function createYearlyNote(date: Moment): Promise<TFile>;
+export function getYearlyNote(
+  date: Moment,
+  yearlyNotes: Record<string, TFile>
+): TFile;
+export function getAllYearlyNotes(): Record<string, TFile>;
+export function getYearlyNoteSettings(): IPeriodicNoteSettings;
 
 // Generic
 export function getPeriodicNoteSettings(
