@@ -5,6 +5,8 @@ import {
   getDailyNoteSettings,
   getWeeklyNoteSettings,
   getMonthlyNoteSettings,
+  getQuarterlyNoteSettings,
+  getYearlyNoteSettings,
 } from "./settings";
 
 import { IGranularity } from "./types";
@@ -64,6 +66,8 @@ function getDateFromFilename(
     day: getDailyNoteSettings,
     week: getWeeklyNoteSettings,
     month: getMonthlyNoteSettings,
+    quarter: getQuarterlyNoteSettings,
+    year: getYearlyNoteSettings,
   };
 
   const format = getSettings[granularity]().format.split("/").pop();

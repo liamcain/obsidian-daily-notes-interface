@@ -4,6 +4,28 @@ interface IPerioditySettings extends dailyNotesInterface.IPeriodicNoteSettings {
   enabled: boolean;
 }
 
+export function setYearlyConfig(config: IPerioditySettings): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const plugin = (<any>window.app).plugins.plugins["periodic-notes"];
+
+  plugin._loaded = true;
+  plugin.settings.yearly = {
+    ...plugin.settings.yearly,
+    ...config,
+  };
+}
+
+export function setQuarterlyConfig(config: IPerioditySettings): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const plugin = (<any>window.app).plugins.plugins["periodic-notes"];
+
+  plugin._loaded = true;
+  plugin.settings.quarterly = {
+    ...plugin.settings.quarterly,
+    ...config,
+  };
+}
+
 export function setMonthlyConfig(config: IPerioditySettings): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const plugin = (<any>window.app).plugins.plugins["periodic-notes"];
@@ -47,7 +69,6 @@ export function setDailyConfig(
   (<any>window.app).plugins.plugins["periodic-notes"]._loaded = false;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (<any>window.app).internalPlugins.plugins[
-    "daily-notes"
-  ].instance.options = config;
+  (<any>window.app).internalPlugins.plugins["daily-notes"].instance.options =
+    config;
 }
