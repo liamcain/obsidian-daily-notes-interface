@@ -19,7 +19,7 @@
     "test:watch": "yarn test -- --watch"
   },
   "dependencies": {
-    "obsidian": "obsidianmd/obsidian-api#master",
+    "obsidian": "latest",
     "tslib": "2.1.0"
   },
   "devDependencies": {
