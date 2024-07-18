@@ -62,3 +62,11 @@ A `dateUID` uniquely identifies a note, allowing for faster note lookup. It is p
 ### Why do I have to pass in the a map of daily notes to `getDailyNote()`?
 
 This allows you to cache the collection of dailyNotes for a significant speed up.
+
+## Sponsors 🙏
+
+A big thank you to everyone that has sponsored this project.
+
+- [Carlo Zottman](https://github.com/czottmann), creator of [Actions for Obsidian](https://actions.work/actions-for-obsidian)
+- [Brian Grohe](https://github.com/paxnovem)
+- [Ben Hong](https://github.com/bencodezen)
