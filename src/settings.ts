@@ -1,18 +1,83 @@
-import {
-  DEFAULT_DAILY_NOTE_FORMAT,
-  DEFAULT_MONTHLY_NOTE_FORMAT,
-  DEFAULT_WEEKLY_NOTE_FORMAT,
-  DEFAULT_QUARTERLY_NOTE_FORMAT,
-  DEFAULT_YEARLY_NOTE_FORMAT,
-} from "./constants";
-import { IPeriodicNoteSettings } from "./types";
+import { DEFAULT_FORMAT } from "./constants";
+import {IGranularity, IPeriodicity, IPeriodicNoteSettings} from "./types";
 
-export function shouldUsePeriodicNotesSettings(
-  periodicity: "daily" | "weekly" | "monthly" | "quarterly" | "yearly"
-): boolean {
+function getPeriodicNotesPlugin() {
+  const { app } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>window.app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.[periodicity]?.enabled;
+  return (<any>app).plugins.getPlugin("periodic-notes");
+}
+
+export function hasPeriodicNotesPlugin(): boolean {
+  return Boolean(getPeriodicNotesPlugin());
+}
+
+export function hasNewPeriodicNotesPlugin(): boolean {
+  const periodicNotes = getPeriodicNotesPlugin();
+  // The CalenderSetManager is not available in the old version (0.0.17) of the Periodic Notes plugin
+  return periodicNotes && Object.hasOwn(periodicNotes, "calendarSetManager");
+}
+
+export function shouldUsePeriodicNotesPluginSettings(
+  granularity: IGranularity
+): boolean {
+  if(!hasPeriodicNotesPlugin()) return false; // no Periodic Notes Plugin
+  return (getPeriodicNotesPluginRawSettings(granularity))?.enabled;
+}
+
+function getPeriodicNotesPluginRawSettings(granularity: IGranularity){
+  const periodicNotes = getPeriodicNotesPlugin();
+  if(!periodicNotes) return {}; // no Periodic Notes Plugin
+  if(hasNewPeriodicNotesPlugin()) {
+        // New Periodic Notes uses CalendarSetManager
+        return periodicNotes?.calendarSetManager?.getActiveSet?.()?.[granularity] || {} ;
+  }
+  // Legacy settings
+  return periodicNotes?.settings?.[IPeriodicity[granularity]] || {} ;
+}
+
+export function getPeriodicNotesPluginSettings(granularity: IGranularity) : IPeriodicNoteSettings {
+  const settings = getPeriodicNotesPluginRawSettings(granularity);
+  return {
+    format: settings.format || DEFAULT_FORMAT[granularity],
+    folder: settings.folder?.trim() || "",
+    template: (settings.templatePath ?? settings.template)?.trim() || "",
+  };
+}
+
+
+export function getPeriodicNoteSettings(granularity: IGranularity): IPeriodicNoteSettings {
+  try {
+    // First try Periodic Notes Plugin
+    if (shouldUsePeriodicNotesPluginSettings(granularity)) {
+      return getPeriodicNotesPluginSettings(granularity);
+    }
+
+    // For daily notes also check the Daily Notes plugin
+    if(granularity == "day") {
+      const { folder, format, template } =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (<any>window.app).internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
+      return {
+        format: format || DEFAULT_FORMAT["day"],
+        folder: folder?.trim() || "",
+        template: template?.trim() || "",
+      };
+    }
+
+    // For weekly notes also check the Calendar plugin
+    if (granularity == "week") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const calendarSettings = (<any>window.app).plugins.getPlugin("calendar")?.options || {};
+      return {
+        format: calendarSettings.weeklyNoteFormat || DEFAULT_FORMAT["week"],
+        folder: calendarSettings.weeklyNoteFolder?.trim() || "",
+        template: calendarSettings.weeklyNoteTemplate?.trim() || "",
+      };
+    }
+
+  } catch (err) {
+    console.info("No custom", IPeriodicity[granularity], "note settings found!", err);
+  }
 }
 
 /**
@@ -20,132 +85,17 @@ export function shouldUsePeriodicNotesSettings(
  * to keep behavior of creating a new note in-sync.
  */
 export function getDailyNoteSettings(): IPeriodicNoteSettings {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { internalPlugins, plugins } = <any>window.app;
-
-    if (shouldUsePeriodicNotesSettings("daily")) {
-      const { format, folder, template } =
-        plugins.getPlugin("periodic-notes")?.settings?.daily || {};
-      return {
-        format: format || DEFAULT_DAILY_NOTE_FORMAT,
-        folder: folder?.trim() || "",
-        template: template?.trim() || "",
-      };
-    }
-
-    const { folder, format, template } =
-      internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
-    return {
-      format: format || DEFAULT_DAILY_NOTE_FORMAT,
-      folder: folder?.trim() || "",
-      template: template?.trim() || "",
-    };
-  } catch (err) {
-    console.info("No custom daily note settings found!", err);
-  }
+  return getPeriodicNoteSettings("day");
 }
-
-/**
- * Read the user settings for the `weekly-notes` plugin
- * to keep behavior of creating a new note in-sync.
- */
 export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const pluginManager = (<any>window.app).plugins;
-
-    const calendarSettings = pluginManager.getPlugin("calendar")?.options;
-    const periodicNotesSettings =
-      pluginManager.getPlugin("periodic-notes")?.settings?.weekly;
-
-    if (shouldUsePeriodicNotesSettings("weekly")) {
-      return {
-        format: periodicNotesSettings.format || DEFAULT_WEEKLY_NOTE_FORMAT,
-        folder: periodicNotesSettings.folder?.trim() || "",
-        template: periodicNotesSettings.template?.trim() || "",
-      };
-    }
-
-    const settings = calendarSettings || {};
-    return {
-      format: settings.weeklyNoteFormat || DEFAULT_WEEKLY_NOTE_FORMAT,
-      folder: settings.weeklyNoteFolder?.trim() || "",
-      template: settings.weeklyNoteTemplate?.trim() || "",
-    };
-  } catch (err) {
-    console.info("No custom weekly note settings found!", err);
-  }
+  return getPeriodicNoteSettings("week");
 }
-
-/**
- * Read the user settings for the `periodic-notes` plugin
- * to keep behavior of creating a new note in-sync.
- */
 export function getMonthlyNoteSettings(): IPeriodicNoteSettings {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pluginManager = (<any>window.app).plugins;
-
-  try {
-    const settings =
-      (shouldUsePeriodicNotesSettings("monthly") &&
-        pluginManager.getPlugin("periodic-notes")?.settings?.monthly) ||
-      {};
-
-    return {
-      format: settings.format || DEFAULT_MONTHLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
-    };
-  } catch (err) {
-    console.info("No custom monthly note settings found!", err);
-  }
+  return getPeriodicNoteSettings("month");
 }
-
-/**
- * Read the user settings for the `periodic-notes` plugin
- * to keep behavior of creating a new note in-sync.
- */
 export function getQuarterlyNoteSettings(): IPeriodicNoteSettings {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pluginManager = (<any>window.app).plugins;
-
-  try {
-    const settings =
-      (shouldUsePeriodicNotesSettings("quarterly") &&
-        pluginManager.getPlugin("periodic-notes")?.settings?.quarterly) ||
-      {};
-
-    return {
-      format: settings.format || DEFAULT_QUARTERLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
-    };
-  } catch (err) {
-    console.info("No custom quarterly note settings found!", err);
-  }
+  return getPeriodicNoteSettings("quarter");
 }
-
-/**
- * Read the user settings for the `periodic-notes` plugin
- * to keep behavior of creating a new note in-sync.
- */
 export function getYearlyNoteSettings(): IPeriodicNoteSettings {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pluginManager = (<any>window.app).plugins;
-
-  try {
-    const settings =
-      (shouldUsePeriodicNotesSettings("yearly") &&
-        pluginManager.getPlugin("periodic-notes")?.settings?.yearly) ||
-      {};
-
-    return {
-      format: settings.format || DEFAULT_YEARLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
-    };
-  } catch (err) {
-    console.info("No custom yearly note settings found!", err);
-  }
+  return getPeriodicNoteSettings("year");
 }

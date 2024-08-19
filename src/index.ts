@@ -17,9 +17,7 @@ export function appHasDailyNotesPluginLoaded(): boolean {
     return true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.daily?.enabled;
+  return shouldUsePeriodicNotesPluginSettings("day");
 }
 
 /**
@@ -28,36 +26,24 @@ export function appHasDailyNotesPluginLoaded(): boolean {
  */
 export function appHasWeeklyNotesPluginLoaded(): boolean {
   const { app } = window;
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((<any>app).plugins.getPlugin("calendar")) {
     return true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.weekly?.enabled;
+  return shouldUsePeriodicNotesPluginSettings("week");
 }
 
 export function appHasMonthlyNotesPluginLoaded(): boolean {
-  const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.monthly?.enabled;
+  return shouldUsePeriodicNotesPluginSettings("month");
 }
 
 export function appHasQuarterlyNotesPluginLoaded(): boolean {
-  const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.quarterly?.enabled;
+  return shouldUsePeriodicNotesPluginSettings("quarter");
 }
 
 export function appHasYearlyNotesPluginLoaded(): boolean {
-  const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.yearly?.enabled;
+  return shouldUsePeriodicNotesPluginSettings("year");
 }
 
 export {
@@ -70,11 +56,13 @@ export {
 
 import type { IGranularity, IPeriodicNoteSettings } from "./types";
 import {
+  getPeriodicNoteSettings,
   getDailyNoteSettings,
   getWeeklyNoteSettings,
   getMonthlyNoteSettings,
   getQuarterlyNoteSettings,
   getYearlyNoteSettings,
+  shouldUsePeriodicNotesPluginSettings,
 } from "./settings";
 import { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
 import { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
@@ -92,20 +80,6 @@ import { createYearlyNote, getAllYearlyNotes, getYearlyNote } from "./yearly";
 
 export { getDateUID, getDateFromFile, getDateFromPath } from "./parse";
 export { getTemplateInfo } from "./vault";
-
-function getPeriodicNoteSettings(
-  granularity: IGranularity
-): IPeriodicNoteSettings {
-  const getSettings = {
-    day: getDailyNoteSettings,
-    week: getWeeklyNoteSettings,
-    month: getMonthlyNoteSettings,
-    quarter: getQuarterlyNoteSettings,
-    year: getYearlyNoteSettings,
-  }[granularity];
-
-  return getSettings();
-}
 
 function createPeriodicNote(
   granularity: IGranularity,

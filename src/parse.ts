@@ -1,13 +1,7 @@
 import type { Moment } from "moment";
 import { TFile } from "obsidian";
 
-import {
-  getDailyNoteSettings,
-  getWeeklyNoteSettings,
-  getMonthlyNoteSettings,
-  getQuarterlyNoteSettings,
-  getYearlyNoteSettings,
-} from "./settings";
+import { getPeriodicNoteSettings } from "./settings";
 
 import { IGranularity } from "./types";
 import { basename } from "./vault";
@@ -62,15 +56,8 @@ function getDateFromFilename(
   filename: string,
   granularity: IGranularity
 ): Moment | null {
-  const getSettings = {
-    day: getDailyNoteSettings,
-    week: getWeeklyNoteSettings,
-    month: getMonthlyNoteSettings,
-    quarter: getQuarterlyNoteSettings,
-    year: getYearlyNoteSettings,
-  };
 
-  const format = getSettings[granularity]().format.split("/").pop();
+  const format = getPeriodicNoteSettings(granularity).format.split("/").pop();
   const noteDate = window.moment(filename, format, true);
 
   if (!noteDate.isValid()) {
