@@ -33,6 +33,24 @@ export function getDayOfWeekNumericalValue(dayOfWeekName: string): number {
   return getDaysOfWeek().indexOf(dayOfWeekName.toLowerCase());
 }
 
+function isISOWeekFormat(format: string): boolean {
+  // Check if format uses ISO week tokens (gggg, GGGG, ww, WW, w, W, e, E)
+  return /[gGwWEe]/.test(format);
+}
+
+function getISODayOfWeekNumericalValue(dayOfWeekName: string): number {
+  const daysOfWeek: Record<string, number> = {
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
+    sunday: 7,
+  };
+  return daysOfWeek[dayOfWeekName.toLowerCase()];
+}
+
 export async function createWeeklyNote(date: Moment): Promise<TFile> {
   const { vault } = window.app;
   const { template, format, folder } = getWeeklyNoteSettings();
@@ -68,8 +86,15 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
         .replace(
           /{{\s*(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\s*:(.*?)}}/gi,
           (_, dayOfWeek, momentFormat) => {
-            const day = getDayOfWeekNumericalValue(dayOfWeek);
-            return date.weekday(day).format(momentFormat.trim());
+            if (isISOWeekFormat(format)) {
+              // Use ISO weekday for ISO week formats
+              const isoDay = getISODayOfWeekNumericalValue(dayOfWeek);
+              return date.isoWeekday(isoDay).format(momentFormat.trim());
+            } else {
+              // Use locale weekday for non-ISO formats (backward compatibility)
+              const day = getDayOfWeekNumericalValue(dayOfWeek);
+              return date.weekday(day).format(momentFormat.trim());
+            }
           }
         )
     );
