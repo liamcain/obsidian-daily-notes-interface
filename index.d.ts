@@ -37,10 +37,6 @@ export function getDateFromFile(
   file: TFile,
   granularity: IGranularity
 ): Moment | null;
-export function getDateFromPath(
-  path: string,
-  granularity: IGranularity
-): Moment | null;
 export function getDateUID(date: Moment, granularity: IGranularity): string;
 export function getTemplateInfo(template: string): Promise<[string, IFoldInfo]>;
 

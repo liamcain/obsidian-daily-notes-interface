@@ -90,7 +90,7 @@ import {
 } from "./quarterly";
 import { createYearlyNote, getAllYearlyNotes, getYearlyNote } from "./yearly";
 
-export { getDateUID, getDateFromFile, getDateFromPath } from "./parse";
+export { getDateUID, getDateFromFile } from "./parse";
 export { getTemplateInfo } from "./vault";
 
 function getPeriodicNoteSettings(

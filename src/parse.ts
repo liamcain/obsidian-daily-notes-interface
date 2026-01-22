@@ -10,7 +10,7 @@ import {
 } from "./settings";
 
 import { IGranularity } from "./types";
-import { basename } from "./vault";
+import { join } from "./vault";
 
 /**
  * dateUID is a way of weekly identifying daily/weekly/monthly notes.
@@ -48,20 +48,6 @@ export function getDateFromFile(
   file: TFile,
   granularity: IGranularity
 ): Moment | null {
-  return getDateFromFilename(file.basename, granularity);
-}
-
-export function getDateFromPath(
-  path: string,
-  granularity: IGranularity
-): Moment | null {
-  return getDateFromFilename(basename(path), granularity);
-}
-
-function getDateFromFilename(
-  filename: string,
-  granularity: IGranularity
-): Moment | null {
   const getSettings = {
     day: getDailyNoteSettings,
     week: getWeeklyNoteSettings,
@@ -70,7 +56,26 @@ function getDateFromFilename(
     year: getYearlyNoteSettings,
   };
 
-  const format = getSettings[granularity]().format.split("/").pop();
+  const { folder, format } = getSettings[granularity]();
+
+  // Get path relative to the notes folder, without extension
+  // file.basename already excludes the extension
+  let relativePath = join(file.parent.path, file.basename);
+  if (folder) {
+    if (!relativePath.startsWith(folder + "/")) {
+      return null;
+    }
+    relativePath = relativePath.slice(folder.length + 1);
+  }
+
+  return getDateFromFilename(relativePath, format, granularity);
+}
+
+function getDateFromFilename(
+  filename: string,
+  format: string,
+  granularity: IGranularity
+): Moment | null {
   const noteDate = window.moment(filename, format, true);
 
   if (!noteDate.isValid()) {
