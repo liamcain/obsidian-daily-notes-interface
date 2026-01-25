@@ -160,6 +160,21 @@ describe("getAllWeeklyNotes", () => {
     });
   });
 
+  test("supports format with week number and full date", () => {
+    setWeeklyConfig({
+      enabled: true,
+      folder: "/",
+      format: "[W]WW_YYYY-MM-DD",
+      template: "template",
+    });
+    const fileA = createFile("W01_2024-12-29", "");
+    createFolder("/", [fileA]);
+
+    expect(dailyNotesInterface.getAllWeeklyNotes()).toEqual({
+      "week-2024-12-29T00:00:00-05:00": fileA,
+    });
+  });
+
   test("returns a list of all weekly notes including files nested in folders", () => {
     setWeeklyConfig({
       enabled: true,
@@ -226,6 +241,8 @@ describe("getWeeklyNote", () => {
 
 describe("createWeeklyNote", () => {
   beforeEach(() => {
+    window.app = getMockApp();
+    window.moment = moment;
     window.existingFiles = {};
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (<any>moment.localeData())._week.dow = 1;
@@ -243,6 +260,21 @@ describe("createWeeklyNote", () => {
 
     expect(window.app.vault.create).toHaveBeenCalledWith(
       "/weekly-notes/2020-11-05.md",
+      ""
+    );
+  });
+
+  test("creates weekly note with ISO week crossing year boundary", async () => {
+    setWeeklyConfig({
+      enabled: true,
+      folder: "/weekly-notes",
+      format: "[W]WW_YYYY-MM-DD",
+    });
+    const date = moment({ day: 29, month: 11, year: 2025 });
+    await dailyNotesInterface.createWeeklyNote(date);
+    
+    expect(window.app.vault.create).toHaveBeenCalledWith(
+      "/weekly-notes/W01_2025-12-29.md",
       ""
     );
   });
