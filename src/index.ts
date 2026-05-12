@@ -68,6 +68,12 @@ export {
   DEFAULT_YEARLY_NOTE_FORMAT,
 } from "./constants";
 
+export { DailyNotesFolderMissingError } from "./daily";
+export { WeeklyNotesFolderMissingError } from "./weekly";
+export { MonthlyNotesFolderMissingError } from "./monthly";
+export { QuarterlyNotesFolderMissingError } from "./quarterly";
+export { YearlyNotesFolderMissingError } from "./yearly";
+
 import type { IGranularity, IPeriodicNoteSettings } from "./types";
 import {
   getDailyNoteSettings,

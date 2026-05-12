@@ -3,7 +3,9 @@
   "version": "0.9.4",
   "description": "Interface for creating daily notes in Obsidian",
   "author": "liamcain",
-  "main": "./dist/main.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "license": "MIT",
   "packageManager": "pnpm@10.22.0",
   "repository": {
@@ -12,7 +14,8 @@
   },
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "build": "pnpm run lint && rollup -c",
+    "build": "pnpm run lint && tsdown",
+    "build:ci": "tsdown",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -21,16 +24,13 @@
     "tslib": "2.5.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "18.0.0",
-    "@rollup/plugin-node-resolve": "11.2.1",
-    "@rollup/plugin-typescript": "8.2.1",
     "@types/moment": "2.13.0",
     "@typescript-eslint/eslint-plugin": "4.20.0",
     "@typescript-eslint/parser": "4.20.0",
     "eslint": "7.23.0",
     "moment": "2.29.1",
     "moment-timezone": "0.5.33",
-    "rollup": "2.44.0",
+    "tsdown": "0.22.0",
     "typescript": "5.6.3",
     "vitest": "2.1.9"
   }
