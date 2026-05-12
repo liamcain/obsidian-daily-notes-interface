@@ -1,14 +1,19 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
     "baseUrl": ".",
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
-    "target": "esnext",
+    "target": "es2020",
     "moduleResolution": "node",
+    "importHelpers": true,
     "lib": ["dom", "es2020"],
-    "types": ["node", "jest"]
+    "types": ["jest"]
   },
   "include": ["**/*.ts"]
 }

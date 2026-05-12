@@ -111,10 +111,12 @@ function createPeriodicNote(
   granularity: IGranularity,
   date: Moment
 ): Promise<TFile> {
-  const createFn = {
+  const createFn: Record<IGranularity, (date: Moment) => Promise<TFile>> = {
     day: createDailyNote,
-    month: createMonthlyNote,
     week: createWeeklyNote,
+    month: createMonthlyNote,
+    quarter: createQuarterlyNote,
+    year: createYearlyNote,
   };
   return createFn[granularity](date);
 }

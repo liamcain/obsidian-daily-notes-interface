@@ -12,12 +12,12 @@ interface IFoldInfo {
 // Credit: @creationix/path.js
 export function join(...partSegments: string[]): string {
   // Split the inputs into a list of path commands.
-  let parts = [];
+  let parts: string[] = [];
   for (let i = 0, l = partSegments.length; i < l; i++) {
     parts = parts.concat(partSegments[i].split("/"));
   }
   // Interpret the path commands to get the new resolved path.
-  const newParts = [];
+  const newParts: string[] = [];
   for (let i = 0, l = parts.length; i < l; i++) {
     const part = parts[i];
     // Remove leading and trailing slashes
