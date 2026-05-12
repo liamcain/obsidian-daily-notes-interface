@@ -5,15 +5,16 @@
   "author": "liamcain",
   "main": "./dist/main.js",
   "license": "MIT",
+  "packageManager": "pnpm@10.22.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/liamcain/obsidian-daily-notes-interface"
   },
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "build": "npm run lint && rollup -c",
+    "build": "pnpm run lint && rollup -c",
     "test": "jest",
-    "test:watch": "yarn test -- --watch"
+    "test:watch": "pnpm test --watch"
   },
   "dependencies": {
     "obsidian": "obsidianmd/obsidian-api#master",
