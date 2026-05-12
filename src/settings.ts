@@ -7,6 +7,10 @@ import {
 } from "./constants";
 import { IPeriodicNoteSettings } from "./types";
 
+function validateString(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
+
 export function shouldUsePeriodicNotesSettings(
   periodicity: "daily" | "weekly" | "monthly" | "quarterly" | "yearly"
 ): boolean {
@@ -29,8 +33,8 @@ export function getDailyNoteSettings(): IPeriodicNoteSettings {
         plugins.getPlugin("periodic-notes")?.settings?.daily || {};
       return {
         format: format || DEFAULT_DAILY_NOTE_FORMAT,
-        folder: folder?.trim() || "",
-        template: template?.trim() || "",
+        folder: validateString(folder).trim(),
+        template: validateString(template).trim(),
       };
     }
 
@@ -38,8 +42,8 @@ export function getDailyNoteSettings(): IPeriodicNoteSettings {
       internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
     return {
       format: format || DEFAULT_DAILY_NOTE_FORMAT,
-      folder: folder?.trim() || "",
-      template: template?.trim() || "",
+      folder: validateString(folder).trim(),
+      template: validateString(template).trim(),
     };
   } catch (err) {
     console.info("No custom daily note settings found!", err);
@@ -62,16 +66,16 @@ export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
     if (shouldUsePeriodicNotesSettings("weekly")) {
       return {
         format: periodicNotesSettings.format || DEFAULT_WEEKLY_NOTE_FORMAT,
-        folder: periodicNotesSettings.folder?.trim() || "",
-        template: periodicNotesSettings.template?.trim() || "",
+        folder: validateString(periodicNotesSettings.folder).trim(),
+        template: validateString(periodicNotesSettings.template).trim(),
       };
     }
 
     const settings = calendarSettings || {};
     return {
       format: settings.weeklyNoteFormat || DEFAULT_WEEKLY_NOTE_FORMAT,
-      folder: settings.weeklyNoteFolder?.trim() || "",
-      template: settings.weeklyNoteTemplate?.trim() || "",
+      folder: validateString(settings.weeklyNoteFolder).trim(),
+      template: validateString(settings.weeklyNoteTemplate).trim(),
     };
   } catch (err) {
     console.info("No custom weekly note settings found!", err);
@@ -94,8 +98,8 @@ export function getMonthlyNoteSettings(): IPeriodicNoteSettings {
 
     return {
       format: settings.format || DEFAULT_MONTHLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
+      folder: validateString(settings.folder).trim(),
+      template: validateString(settings.template).trim(),
     };
   } catch (err) {
     console.info("No custom monthly note settings found!", err);
@@ -118,8 +122,8 @@ export function getQuarterlyNoteSettings(): IPeriodicNoteSettings {
 
     return {
       format: settings.format || DEFAULT_QUARTERLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
+      folder: validateString(settings.folder).trim(),
+      template: validateString(settings.template).trim(),
     };
   } catch (err) {
     console.info("No custom quarterly note settings found!", err);
@@ -142,8 +146,8 @@ export function getYearlyNoteSettings(): IPeriodicNoteSettings {
 
     return {
       format: settings.format || DEFAULT_YEARLY_NOTE_FORMAT,
-      folder: settings.folder?.trim() || "",
-      template: settings.template?.trim() || "",
+      folder: validateString(settings.folder).trim(),
+      template: validateString(settings.template).trim(),
     };
   } catch (err) {
     console.info("No custom yearly note settings found!", err);
