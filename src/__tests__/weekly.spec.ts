@@ -1,4 +1,5 @@
-import * as moment from "moment-timezone";
+import moment from "moment-timezone";
+import { beforeEach, describe, expect, test, vi, type MockedFunction } from "vitest";
 
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
@@ -7,7 +8,7 @@ import { getDayOfWeekNumericalValue } from "../weekly";
 import * as vaultUtils from "../vault";
 import { setWeeklyConfig } from "../testUtils/utils";
 
-jest.mock("path");
+vi.mock("path");
 
 describe("getDayOfWeekNumericalValue", () => {
   beforeEach(() => {
@@ -294,10 +295,10 @@ describe("createWeeklyNote", () => {
 
   test("shows error if file creation failed", async () => {
     const createFn = window.app.vault.create;
-    (createFn as jest.MockedFunction<typeof createFn>).mockRejectedValue(
+    (createFn as MockedFunction<typeof createFn>).mockRejectedValue(
       "error"
     );
-    jest.spyOn(global.console, "error").mockImplementation();
+    vi.spyOn(globalThis.console, "error").mockImplementation((() => undefined));
 
     setWeeklyConfig({
       enabled: true,
@@ -323,7 +324,7 @@ describe("createWeeklyNote", () => {
   });
 
   test("replaces all mustaches in template", async () => {
-    const getTemplateInfo = jest.spyOn(vaultUtils, "getTemplateInfo");
+    const getTemplateInfo = vi.spyOn(vaultUtils, "getTemplateInfo");
     getTemplateInfo.mockResolvedValue([
       `
 {{date}}

@@ -1,4 +1,5 @@
-import * as moment from "moment-timezone";
+import moment from "moment-timezone";
+import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import getMockApp, { createFile } from "src/testUtils/mockApp";
 
 import * as dailyNotesInterface from "../index";
@@ -8,7 +9,7 @@ import {
   setWeeklyConfig,
 } from "../testUtils/utils";
 
-jest.mock("path");
+vi.mock("path");
 
 describe("getDateUID", () => {
   beforeAll(() => {

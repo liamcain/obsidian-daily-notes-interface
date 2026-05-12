@@ -1,4 +1,5 @@
-import * as moment from "moment-timezone";
+import moment from "moment-timezone";
+import { beforeEach, describe, expect, test, vi, type MockedFunction } from "vitest";
 
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
@@ -6,7 +7,7 @@ import * as dailyNotesInterface from "../index";
 import { setMonthlyConfig } from "../testUtils/utils";
 import * as vaultUtils from "../vault";
 
-jest.mock("path");
+vi.mock("path");
 
 moment.tz.setDefault("America/New_York");
 
@@ -242,10 +243,8 @@ describe("createMonthlyNote", () => {
 
   test("shows error if file creation failed", async () => {
     const createFn = window.app.vault.create;
-    (createFn as jest.MockedFunction<typeof createFn>).mockRejectedValue(
-      "error"
-    );
-    jest.spyOn(global.console, "error").mockImplementation();
+    (createFn as MockedFunction<typeof createFn>).mockRejectedValue("error");
+    vi.spyOn(globalThis.console, "error").mockImplementation((() => undefined));
 
     setMonthlyConfig({
       enabled: true,
@@ -272,7 +271,7 @@ describe("createMonthlyNote", () => {
   });
 
   test("replaces all mustaches in template", async () => {
-    const getTemplateInfo = jest.spyOn(vaultUtils, "getTemplateInfo");
+    const getTemplateInfo = vi.spyOn(vaultUtils, "getTemplateInfo");
     getTemplateInfo.mockResolvedValue([
       `
 {{date}}

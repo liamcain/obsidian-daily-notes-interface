@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { App, TAbstractFile, TFile, TFolder } from "obsidian";
 
 declare global {
@@ -107,8 +108,8 @@ export default function getMockApp(): App {
   return {
     // @ts-ignore
     foldManager: {
-      save: jest.fn(),
-      load: jest.fn(),
+      save: vi.fn(),
+      load: vi.fn(),
     },
     vault: {
       configDir: "",
@@ -128,6 +129,10 @@ export default function getMockApp(): App {
         remove: () => Promise.resolve(),
         rename: () => Promise.resolve(),
         copy: () => Promise.resolve(),
+        stat: () => Promise.resolve(null),
+        append: () => Promise.resolve(),
+        appendBinary: () => Promise.resolve(),
+        process: () => Promise.resolve(""),
       },
       getName: () => "",
       getAbstractFileByPath: (path: string) =>
@@ -140,7 +145,7 @@ export default function getMockApp(): App {
         path: "",
         vault: null,
       }),
-      create: jest.fn(),
+      create: vi.fn(),
       createFolder: () => Promise.resolve(null),
       createBinary: () => Promise.resolve(null),
       read: () => Promise.resolve(""),

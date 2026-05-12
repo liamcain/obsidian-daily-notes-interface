@@ -1,4 +1,5 @@
-import * as moment from "moment-timezone";
+import moment from "moment-timezone";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import getMockApp, { createFile, createFolder } from "src/testUtils/mockApp";
 
@@ -181,7 +182,7 @@ describe("createDailyNote", () => {
   });
 
   test("replaces all mustaches in template", async () => {
-    const getTemplateInfo = jest.spyOn(vaultUtils, "getTemplateInfo");
+    const getTemplateInfo = vi.spyOn(vaultUtils, "getTemplateInfo");
     getTemplateInfo.mockResolvedValue([
       `
 {{date}}

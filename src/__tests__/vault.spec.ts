@@ -1,4 +1,5 @@
-import * as moment from "moment";
+import moment from "moment";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import * as dailyNotesInterface from "../index";
 import { join } from "../vault";
@@ -39,7 +40,7 @@ describe("getTemplateInfo", () => {
   });
 
   test("throws error if file can't be found", async () => {
-    jest.spyOn(global.console, "error").mockImplementation();
+    vi.spyOn(globalThis.console, "error").mockImplementation((() => undefined));
 
     const [templateContents] = await dailyNotesInterface.getTemplateInfo(
       "nonexistent-file"
