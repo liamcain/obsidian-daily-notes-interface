@@ -1,5 +1,6 @@
-import type { Moment } from "moment";
 import { App, normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
+
+import type { Moment } from "./moment-types";
 
 import { getDateFromFile, getDateUID } from "./parse";
 import { getDailyNoteSettings } from "./settings";

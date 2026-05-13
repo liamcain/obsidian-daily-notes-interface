@@ -1,6 +1,6 @@
-import type { Moment } from "moment";
 import { TFile } from "obsidian";
 
+import type { Moment } from "./moment-types";
 import {
   getDailyNoteSettings,
   getWeeklyNoteSettings,

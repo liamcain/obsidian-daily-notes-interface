@@ -1,6 +1,7 @@
-import type moment from "moment";
-import type { Moment } from "moment";
 import { App, TFile } from "obsidian";
+import type { moment } from "obsidian";
+
+import type { Moment } from "./moment-types";
 
 declare global {
   interface Window {

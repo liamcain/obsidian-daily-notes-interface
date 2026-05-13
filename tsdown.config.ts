@@ -6,5 +6,7 @@ export default defineConfig({
   dts: true,
   clean: true,
   // `obsidian` is provided by consumers; never bundle it.
-  external: ["obsidian"],
+  deps: {
+    neverBundle: ["obsidian"],
+  },
 });
