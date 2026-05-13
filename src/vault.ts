@@ -79,8 +79,7 @@ export async function getTemplateInfo(
     const templateFile = metadataCache.getFirstLinkpathDest(templatePath, "");
     const contents = await vault.cachedRead(templateFile);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const IFoldInfo = (window.app as any).foldManager.load(templateFile);
+    const IFoldInfo = window.app.foldManager.load(templateFile);
     return [contents, IFoldInfo];
   } catch (err) {
     console.error(

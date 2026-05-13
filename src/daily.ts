@@ -62,8 +62,7 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
         )
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (app as any).foldManager.save(createdFile, IFoldInfo);
+    app.foldManager.save(createdFile, IFoldInfo);
 
     return createdFile;
   } catch (err) {

@@ -10,8 +10,7 @@ export class WeeklyNotesFolderMissingError extends Error {}
 
 function getDaysOfWeek(): string[] {
   const { moment } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let weekStart = (<any>moment.localeData())._week.dow;
+  let weekStart = moment.localeData().firstDayOfWeek();
   const daysOfWeek = [
     "sunday",
     "monday",
@@ -74,8 +73,7 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
         )
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window.app as any).foldManager.save(createdFile, IFoldInfo);
+    window.app.foldManager.save(createdFile, IFoldInfo);
 
     return createdFile;
   } catch (err) {

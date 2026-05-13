@@ -1,7 +1,11 @@
-import type { moment } from "obsidian";
+import type moment from "moment";
 
-// Re-derive the Moment instance type from the value Obsidian exports.
-// This keeps the library off of the standalone `moment` package: the
-// runtime always comes from `window.moment` (Obsidian-bundled), and the
-// types follow the same source of truth.
-export type Moment = ReturnType<typeof moment>;
+// `moment` has a UMD-style export where the `Moment` interface lives
+// inside the `moment` namespace rather than being a top-level named
+// export. Reach into the namespace and re-export so the rest of the
+// library can `import type { Moment } from "./moment-types"`.
+//
+// `moment` stays a devDependency only - the runtime always uses
+// `window.moment` (Obsidian-bundled), and consumers inherit the moment
+// types transitively through their `obsidian` install.
+export type Moment = moment.Moment;

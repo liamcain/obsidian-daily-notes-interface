@@ -30,6 +30,15 @@ export default tseslint.config(
     },
   },
   {
+    // src/moment-types.ts bridges Moment in from the moment package
+    // intentionally (consumers get moment transitively via obsidian).
+    // Tests run outside Obsidian and need a real moment-timezone import.
+    files: ["src/moment-types.ts", "src/__tests__/**/*.ts"],
+    rules: {
+      "no-restricted-imports": "off",
+    },
+  },
+  {
     ignores: [
       "node_modules",
       "dist",

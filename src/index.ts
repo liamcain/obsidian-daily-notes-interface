@@ -12,15 +12,13 @@ declare global {
 
 export function appHasDailyNotesPluginLoaded(): boolean {
   const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dailyNotesPlugin = (<any>app).internalPlugins.plugins["daily-notes"];
+  const dailyNotesPlugin = app.internalPlugins.plugins["daily-notes"];
   if (dailyNotesPlugin && dailyNotesPlugin.enabled) {
     return true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.daily?.enabled;
+  const periodicNotes = app.plugins.getPlugin("periodic-notes");
+  return !!periodicNotes?.settings?.daily?.enabled;
 }
 
 /**
@@ -30,35 +28,30 @@ export function appHasDailyNotesPluginLoaded(): boolean {
 export function appHasWeeklyNotesPluginLoaded(): boolean {
   const { app } = window;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if ((<any>app).plugins.getPlugin("calendar")) {
+  if (app.plugins.getPlugin("calendar")) {
     return true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.weekly?.enabled;
+  const periodicNotes = app.plugins.getPlugin("periodic-notes");
+  return !!periodicNotes?.settings?.weekly?.enabled;
 }
 
 export function appHasMonthlyNotesPluginLoaded(): boolean {
   const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.monthly?.enabled;
+  const periodicNotes = app.plugins.getPlugin("periodic-notes");
+  return !!periodicNotes?.settings?.monthly?.enabled;
 }
 
 export function appHasQuarterlyNotesPluginLoaded(): boolean {
   const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.quarterly?.enabled;
+  const periodicNotes = app.plugins.getPlugin("periodic-notes");
+  return !!periodicNotes?.settings?.quarterly?.enabled;
 }
 
 export function appHasYearlyNotesPluginLoaded(): boolean {
   const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.yearly?.enabled;
+  const periodicNotes = app.plugins.getPlugin("periodic-notes");
+  return !!periodicNotes?.settings?.yearly?.enabled;
 }
 
 export {

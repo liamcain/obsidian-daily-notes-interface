@@ -50,8 +50,7 @@ export async function createYearlyNote(date: Moment): Promise<TFile> {
         .replace(/{{\s*title\s*}}/gi, filename)
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window.app as any).foldManager.save(createdFile, IFoldInfo);
+    window.app.foldManager.save(createdFile, IFoldInfo);
 
     return createdFile;
   } catch (err) {

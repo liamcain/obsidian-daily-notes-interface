@@ -14,9 +14,8 @@ function validateString(value: unknown): string {
 export function shouldUsePeriodicNotesSettings(
   periodicity: "daily" | "weekly" | "monthly" | "quarterly" | "yearly"
 ): boolean {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>window.app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.[periodicity]?.enabled;
+  const periodicNotes = window.app.plugins.getPlugin("periodic-notes");
+  return !!periodicNotes?.settings?.[periodicity]?.enabled;
 }
 
 /**
@@ -25,8 +24,7 @@ export function shouldUsePeriodicNotesSettings(
  */
 export function getDailyNoteSettings(): IPeriodicNoteSettings {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { internalPlugins, plugins } = <any>window.app;
+    const { internalPlugins, plugins } = window.app;
 
     if (shouldUsePeriodicNotesSettings("daily")) {
       const { format, folder, template } =
@@ -56,14 +54,13 @@ export function getDailyNoteSettings(): IPeriodicNoteSettings {
  */
 export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const pluginManager = (<any>window.app).plugins;
+    const pluginManager = window.app.plugins;
 
     const calendarSettings = pluginManager.getPlugin("calendar")?.options;
     const periodicNotesSettings =
       pluginManager.getPlugin("periodic-notes")?.settings?.weekly;
 
-    if (shouldUsePeriodicNotesSettings("weekly")) {
+    if (shouldUsePeriodicNotesSettings("weekly") && periodicNotesSettings) {
       return {
         format: periodicNotesSettings.format || DEFAULT_WEEKLY_NOTE_FORMAT,
         folder: validateString(periodicNotesSettings.folder).trim(),
@@ -87,8 +84,7 @@ export function getWeeklyNoteSettings(): IPeriodicNoteSettings {
  * to keep behavior of creating a new note in-sync.
  */
 export function getMonthlyNoteSettings(): IPeriodicNoteSettings {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pluginManager = (<any>window.app).plugins;
+  const pluginManager = window.app.plugins;
 
   try {
     const settings =
@@ -111,8 +107,7 @@ export function getMonthlyNoteSettings(): IPeriodicNoteSettings {
  * to keep behavior of creating a new note in-sync.
  */
 export function getQuarterlyNoteSettings(): IPeriodicNoteSettings {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pluginManager = (<any>window.app).plugins;
+  const pluginManager = window.app.plugins;
 
   try {
     const settings =
@@ -135,8 +130,7 @@ export function getQuarterlyNoteSettings(): IPeriodicNoteSettings {
  * to keep behavior of creating a new note in-sync.
  */
 export function getYearlyNoteSettings(): IPeriodicNoteSettings {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pluginManager = (<any>window.app).plugins;
+  const pluginManager = window.app.plugins;
 
   try {
     const settings =
