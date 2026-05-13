@@ -3,15 +3,32 @@
   "version": "0.9.4",
   "description": "Interface for creating daily notes in Obsidian",
   "author": "liamcain",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "license": "MIT",
   "packageManager": "pnpm@10.22.0",
+  "engines": {
+    "node": ">=22.9.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/liamcain/obsidian-daily-notes-interface"
   },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "pnpm run lint && tsdown",
@@ -20,8 +37,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "obsidian": "obsidianmd/obsidian-api#master",
     "tslib": "2.5.0"
+  },
+  "peerDependencies": {
+    "obsidian": ">=1.0.0"
   },
   "devDependencies": {
     "@types/moment": "2.13.0",
@@ -30,6 +49,7 @@
     "eslint": "7.23.0",
     "moment": "2.29.1",
     "moment-timezone": "0.5.33",
+    "obsidian": "obsidianmd/obsidian-api#master",
     "tsdown": "0.22.0",
     "typescript": "5.6.3",
     "vitest": "2.1.9"

@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      obsidian:
-        specifier: obsidianmd/obsidian-api#master
-        version: https://codeload.github.com/obsidianmd/obsidian-api/tar.gz/4c5889aa06d3ceb3d4d3a20931fbeaede6d399a0(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
       tslib:
         specifier: 2.5.0
         version: 2.5.0
@@ -33,6 +30,9 @@ importers:
       moment-timezone:
         specifier: 0.5.33
         version: 0.5.33
+      obsidian:
+        specifier: obsidianmd/obsidian-api#master
+        version: https://codeload.github.com/obsidianmd/obsidian-api/tar.gz/4c5889aa06d3ceb3d4d3a20931fbeaede6d399a0(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
       tsdown:
         specifier: 0.22.0
         version: 0.22.0(typescript@5.6.3)
