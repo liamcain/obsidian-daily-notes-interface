@@ -9,12 +9,17 @@ A collection of utility functions for working with dates and daily notes in Obsi
 The best way to use this package is to add it to your dependencies:
 
 ```
-# if you use npm:
+# pnpm
+pnpm add obsidian-daily-notes-interface
+
+# npm
 npm install --save obsidian-daily-notes-interface
 
-# or if you use Yarn:
+# yarn
 yarn add obsidian-daily-notes-interface
 ```
+
+`obsidian` is a peer dependency — your plugin should already declare it.
 
 ## Utilities
 
