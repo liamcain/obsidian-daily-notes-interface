@@ -30,7 +30,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint .",
     "build": "pnpm run lint && tsdown",
     "build:ci": "tsdown",
     "test": "vitest run",
@@ -43,15 +43,18 @@
     "obsidian": ">=1.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "9.30.1",
     "@types/moment": "2.13.0",
-    "@typescript-eslint/eslint-plugin": "4.20.0",
-    "@typescript-eslint/parser": "4.20.0",
-    "eslint": "7.23.0",
+    "eslint": "9.30.1",
+    "eslint-plugin-obsidianmd": "0.2.9",
+    "globals": "14.0.0",
+    "jiti": "2.6.1",
     "moment": "2.29.1",
     "moment-timezone": "0.5.33",
     "obsidian": "obsidianmd/obsidian-api#master",
     "tsdown": "0.22.0",
     "typescript": "5.6.3",
+    "typescript-eslint": "8.35.1",
     "vitest": "2.1.9"
   }
 }
