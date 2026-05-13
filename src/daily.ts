@@ -1,6 +1,6 @@
-import { App, normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
+import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
-import type { Moment } from "./moment-types";
+import type { DurationConstructor, Moment } from "./moment-types";
 
 import { getDateFromFile, getDateUID } from "./parse";
 import { getDailyNoteSettings } from "./settings";
@@ -15,12 +15,16 @@ export class DailyNotesFolderMissingError extends Error {}
  *
  * Note: it has an added bonus that it's not 'today' specific.
  */
-export async function createDailyNote(date: Moment): Promise<TFile> {
-  const app = window.app as App;
+export async function createDailyNote(date: Moment): Promise<TFile | undefined> {
+  const { app } = window;
   const { vault } = app;
   const moment = window.moment;
 
-  const { template, format, folder } = getDailyNoteSettings();
+  const {
+    template = "",
+    format = "",
+    folder = "",
+  } = getDailyNoteSettings() ?? {};
 
   const [templateContents, IFoldInfo] = await getTemplateInfo(template);
   const filename = date.format(format);
@@ -35,7 +39,14 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
         .replace(/{{\s*title\s*}}/gi, filename)
         .replace(
           /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
-          (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+          (
+            _: string,
+            _timeOrDate: string,
+            calc: string,
+            timeDelta: string,
+            unit: DurationConstructor,
+            momentFormat: string
+          ) => {
             const now = moment();
             const currentDate = date.clone().set({
               hour: now.get("hour"),
@@ -62,7 +73,7 @@ export async function createDailyNote(date: Moment): Promise<TFile> {
         )
     );
 
-    app.foldManager.save(createdFile, IFoldInfo);
+    void app.foldManager.save(createdFile, IFoldInfo);
 
     return createdFile;
   } catch (err) {
@@ -83,13 +94,11 @@ export function getAllDailyNotes(): Record<string, TFile> {
    * Find all daily notes in the daily note folder
    */
   const { vault } = window.app;
-  const { folder } = getDailyNoteSettings();
+  const { folder = "" } = getDailyNoteSettings();
 
-  const dailyNotesFolder = vault.getAbstractFileByPath(
-    normalizePath(folder)
-  ) as TFolder;
+  const dailyNotesFolder = vault.getAbstractFileByPath(normalizePath(folder));
 
-  if (!dailyNotesFolder) {
+  if (!(dailyNotesFolder instanceof TFolder)) {
     throw new DailyNotesFolderMissingError("Failed to find daily notes folder");
   }
 

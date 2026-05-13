@@ -27,6 +27,16 @@ export default tseslint.config(
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
       "no-undef": "off",
+      // This is a library consumed by Obsidian plugins, not a plugin itself.
+      // `activeDocument` is a plugin-runtime API; the moment package is a
+      // legitimate devDep here (consumers get moment transitively via
+      // obsidian at runtime).
+      "obsidianmd/prefer-active-doc": "off",
+      // The obsidianmd `rule-custom-message` rule wraps no-console with
+      // plugin-targeted advice; this library logs from catch blocks
+      // when probing optional plugin settings, which is fine.
+      "obsidianmd/rule-custom-message": "off",
+      "depend/ban-dependencies": "off",
     },
   },
   {
@@ -36,6 +46,29 @@ export default tseslint.config(
     files: ["src/moment-types.ts", "src/__tests__/**/*.ts"],
     rules: {
       "no-restricted-imports": "off",
+    },
+  },
+  {
+    // Test and test-utility code reaches into mocked internals where
+    // `any` is unavoidable. Relax the unsafe-* and unbound-method
+    // checks; production source still enforces them.
+    files: ["src/__tests__/**/*.ts", "src/testUtils/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/unbound-method": "off",
+    },
+  },
+  {
+    // moment is a devDep used for tests; runtime consumers get moment
+    // transitively via obsidian. The ban-dependencies rule's blanket
+    // "replace moment" advice doesn't apply to a library's devDeps.
+    files: ["package.json"],
+    rules: {
+      "depend/ban-dependencies": "off",
     },
   },
   {

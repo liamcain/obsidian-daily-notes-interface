@@ -153,7 +153,6 @@ export default function getMockApp(): App {
         if (!file) {
           return Promise.reject("error");
         }
-        // eslint-disable-next-line
         return Promise.resolve((file as any).unsafeCachedData);
       },
       readBinary: () => Promise.resolve(null),

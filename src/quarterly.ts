@@ -1,7 +1,7 @@
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
 import { appHasQuarterlyNotesPluginLoaded } from "./index";
-import type { Moment } from "./moment-types";
+import type { DurationConstructor, Moment } from "./moment-types";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getQuarterlyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
@@ -15,9 +15,15 @@ export class QuarterlyNotesFolderMissingError extends Error {}
  *
  * Note: it has an added bonus that it's not 'today' specific.
  */
-export async function createQuarterlyNote(date: Moment): Promise<TFile> {
+export async function createQuarterlyNote(
+  date: Moment
+): Promise<TFile | undefined> {
   const { vault } = window.app;
-  const { template, format, folder } = getQuarterlyNoteSettings();
+  const {
+    template = "",
+    format = "",
+    folder = "",
+  } = getQuarterlyNoteSettings() ?? {};
   const [templateContents, IFoldInfo] = await getTemplateInfo(template);
   const filename = date.format(format);
   const normalizedPath = await getNotePath(folder, filename);
@@ -28,7 +34,14 @@ export async function createQuarterlyNote(date: Moment): Promise<TFile> {
       templateContents
         .replace(
           /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
-          (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+          (
+            _: string,
+            _timeOrDate: string,
+            calc: string,
+            timeDelta: string,
+            unit: DurationConstructor,
+            momentFormat: string
+          ) => {
             const now = window.moment();
             const currentDate = date.clone().set({
               hour: now.get("hour"),
@@ -50,7 +63,7 @@ export async function createQuarterlyNote(date: Moment): Promise<TFile> {
         .replace(/{{\s*title\s*}}/gi, filename)
     );
 
-    window.app.foldManager.save(createdFile, IFoldInfo);
+    void window.app.foldManager.save(createdFile, IFoldInfo);
 
     return createdFile;
   } catch (err) {
@@ -73,13 +86,11 @@ export function getAllQuarterlyNotes(): Record<string, TFile> {
     return quarterly;
   }
   const { vault } = window.app;
-  const { folder } = getQuarterlyNoteSettings();
+  const { folder = "" } = getQuarterlyNoteSettings() ?? {};
 
-  const quarterlyFolder = vault.getAbstractFileByPath(
-    normalizePath(folder)
-  ) as TFolder;
+  const quarterlyFolder = vault.getAbstractFileByPath(normalizePath(folder));
 
-  if (!quarterlyFolder) {
+  if (!(quarterlyFolder instanceof TFolder)) {
     throw new QuarterlyNotesFolderMissingError(
       "Failed to find quarterly notes folder"
     );

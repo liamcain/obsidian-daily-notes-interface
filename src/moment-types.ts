@@ -9,3 +9,4 @@ import type moment from "moment";
 // `window.moment` (Obsidian-bundled), and consumers inherit the moment
 // types transitively through their `obsidian` install.
 export type Moment = moment.Moment;
+export type DurationConstructor = moment.unitOfTime.DurationConstructor;

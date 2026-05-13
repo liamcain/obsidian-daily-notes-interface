@@ -1,7 +1,7 @@
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
 import { appHasWeeklyNotesPluginLoaded } from "./index";
-import type { Moment } from "./moment-types";
+import type { DurationConstructor, Moment } from "./moment-types";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getWeeklyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
@@ -32,9 +32,15 @@ export function getDayOfWeekNumericalValue(dayOfWeekName: string): number {
   return getDaysOfWeek().indexOf(dayOfWeekName.toLowerCase());
 }
 
-export async function createWeeklyNote(date: Moment): Promise<TFile> {
+export async function createWeeklyNote(
+  date: Moment
+): Promise<TFile | undefined> {
   const { vault } = window.app;
-  const { template, format, folder } = getWeeklyNoteSettings();
+  const {
+    template = "",
+    format = "",
+    folder = "",
+  } = getWeeklyNoteSettings() ?? {};
   const [templateContents, IFoldInfo] = await getTemplateInfo(template);
   const filename = date.format(format);
   const normalizedPath = await getNotePath(folder, filename);
@@ -45,7 +51,14 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
       templateContents
         .replace(
           /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
-          (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+          (
+            _: string,
+            _timeOrDate: string,
+            calc: string,
+            timeDelta: string,
+            unit: DurationConstructor,
+            momentFormat: string
+          ) => {
             const now = window.moment();
             const currentDate = date.clone().set({
               hour: now.get("hour"),
@@ -66,14 +79,14 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
         .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
         .replace(
           /{{\s*(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\s*:(.*?)}}/gi,
-          (_, dayOfWeek, momentFormat) => {
+          (_: string, dayOfWeek: string, momentFormat: string) => {
             const day = getDayOfWeekNumericalValue(dayOfWeek);
             return date.weekday(day).format(momentFormat.trim());
           }
         )
     );
 
-    window.app.foldManager.save(createdFile, IFoldInfo);
+    void window.app.foldManager.save(createdFile, IFoldInfo);
 
     return createdFile;
   } catch (err) {
@@ -97,12 +110,10 @@ export function getAllWeeklyNotes(): Record<string, TFile> {
   }
 
   const { vault } = window.app;
-  const { folder } = getWeeklyNoteSettings();
-  const weeklyNotesFolder = vault.getAbstractFileByPath(
-    normalizePath(folder)
-  ) as TFolder;
+  const { folder = "" } = getWeeklyNoteSettings() ?? {};
+  const weeklyNotesFolder = vault.getAbstractFileByPath(normalizePath(folder));
 
-  if (!weeklyNotesFolder) {
+  if (!(weeklyNotesFolder instanceof TFolder)) {
     throw new WeeklyNotesFolderMissingError(
       "Failed to find weekly notes folder"
     );

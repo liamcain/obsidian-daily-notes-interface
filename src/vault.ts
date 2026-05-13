@@ -67,12 +67,12 @@ export async function getNotePath(
 
 export async function getTemplateInfo(
   template: string
-): Promise<[string, IFoldInfo]> {
+): Promise<[string, IFoldInfo | null]> {
   const { metadataCache, vault } = window.app;
 
   const templatePath = normalizePath(template);
   if (templatePath === "/") {
-    return Promise.resolve(["", null]);
+    return ["", null];
   }
 
   try {
