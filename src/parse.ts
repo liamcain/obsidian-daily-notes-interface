@@ -58,6 +58,44 @@ export function getDateFromPath(
   return getDateFromFilename(basename(path), granularity);
 }
 
+function parseDateFormatToRegExp(format: string): RegExp {
+  // https://momentjs.com/docs/#/displaying/
+  const source = format.replace(/\[([^\]]+)\]|(\.)|(YYYYYY|YYYY|GGGG|gggg|DDDD|DDD|MM|DD|WW|ww|M|D|W|w|Q|d|E|e)/g, function($0, plaintext, dot, token) {
+    if (plaintext) return plaintext;
+    if (dot) return '\\.';
+    switch(token) {
+      case 'YYYYYY':
+        return '[+-]\\d{6}'
+      case 'YYYY':
+      case 'GGGG':
+      case 'gggg':
+        return '\\d{4}';
+      case 'DDDD':
+        return '\\d{3}';
+      case 'DDD':
+        return '\\d{1,3}';
+      case 'MM':
+      case 'DD':
+      case 'WW':
+      case 'ww':
+        return '\\d{2}';
+      case 'M':
+      case 'D':
+      case 'W':
+      case 'w':
+        return '\\d{1,2}';
+      case 'Q':
+      case 'd':
+      case 'E':
+      case 'e':
+        return '\\d';
+    }
+    return $0;
+  });
+  return new RegExp(source, '');
+}
+
+
 function getDateFromFilename(
   filename: string,
   granularity: IGranularity
@@ -70,9 +108,10 @@ function getDateFromFilename(
     year: getYearlyNoteSettings,
   };
 
-  const format = getSettings[granularity]().format.split("/").pop();
-  const noteDate = window.moment(filename, format, true);
+  const format = getSettings[granularity]().format;
+  const noteDate = window.moment(file.path.match(parseDateFormatToRegExp(format)), format, true);
 
+    
   if (!noteDate.isValid()) {
     return null;
   }
