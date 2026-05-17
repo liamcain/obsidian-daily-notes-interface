@@ -79,7 +79,21 @@ function getDateFromFilename(
 
   if (isFormatAmbiguous(format, granularity)) {
     if (granularity === "week") {
+      // If weekly note format contains full date, some ISO week 1 dates fall 
+      // in the previous year.
+      // Parsing by year+week alone would fail, so try parsing with full date first.
       const cleanFormat = removeEscapedCharacters(format);
+      const weekMatch = filename.match(/W?(\d{1,2})/i);
+      const weekNumber = weekMatch ? parseInt(weekMatch[1], 10) : 0;
+      
+      if ((weekNumber === 1) && /[YMD]/.test(cleanFormat)) {
+        // For week 1, if the parsed date is valid and contains date components, use it
+        if (noteDate.isValid()) {
+          return noteDate;
+        }
+      }
+
+
       if (/w{1,2}/i.test(cleanFormat)) {
         return window.moment(
           filename,
